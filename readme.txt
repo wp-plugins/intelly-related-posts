@@ -1,7 +1,7 @@
 === Inline Related Posts ===
 Contributors: IntellyWP
 Donate link: http://intellywp.com/intelly-related-posts/
-Tags: related post,related posts,inline related posts, inside related posts, suggestions, similar post, similar posts, related,contextual, relations, seo, bounce rate, internal links, similarity, related content, inline related post, zemantra
+Tags: related post,related posts,inline related posts, inside related posts, suggestions, similar post, similar posts, related,contextual, relations, seo, bounce rate, internal links, similarity, related content, inline related post, zemantra, inline
 Requires at least: 2.7
 Tested up to: 4.3
 
