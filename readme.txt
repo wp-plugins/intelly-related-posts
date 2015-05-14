@@ -11,9 +11,7 @@ Inline Related post is a new plugin that give you the ability to put related art
 
 **Inline Related post is a new plugin that give you the ability to put related articles INSIDE your posts, CATCHING immediately the attention of the reader.**
 
-Companies like Entrepreneur, The Wall Street Journal, BBC, Business Insider, Financial Times and many others understood this concept and embrace it as you can see in this GIF below.
-
-<img src="screenshot-1.gif" />
+Companies like Entrepreneur, The Wall Street Journal, BBC, Business Insider, Financial Times and many others understood this concept and embrace it as you can see in this GIF in <a href="https://wordpress.org/plugins/intelly-related-posts/screenshots/">Screenshots</a>.
 
 We in IntellyWP take care of marketing aspect of your wordpress site and today we have brought to you the same technology they use, to help you to increase engagement, page views and reducing the bounce rate.
 
