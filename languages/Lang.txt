@@ -1,0 +1,135 @@
+#en_US
+PluginLimit.Line1=In this FREE version you can insert up to N.{0} different Tracking Code (remaining N.{1})
+PluginLimit.Line2=If you need more Tracking Code or more features please buy our PREMIUM version <a href="{0}" target="_blank"><b>HERE</b></a>
+Editor.Add=Tracking Code "#{0} ({1})" successfully stored.
+Button.Add=Add a new Tracking Code
+Button.BuyPRO=Buy PREMIUM
+
+Feedback.email=Contact email
+Feedback.email.check=Please specify a valid email
+Feedback.body=Feedback
+Feedback.body.check=Please specify your feedback
+Feedback.track=Send also track information (this can be very useful for us to solve your issue)
+FeedbackSuccess=Feedback successfully sent. We will reply you ASAP.
+FeedbackError=Errors sending feedback. Please email us at aleste@intellywp.com
+
+AboutNotice=Thank you for trying our amazing plugin. Now you are able to quickly track what you need. Feel free to contact us using our feedback form or our email <a href="mailto:aleste@intellywp.com">aleste@intellywp.com</a>
+AboutTitle=We are crazy! But...
+ManagerTitle=Tracking Code Manager FREE
+ManagerSubtitle=<b>WARNING</b> This does not filter your HTML code for errors or for malicious scripts. Use it at your own risk.
+SettingsTitle=Inline Related Posts Settings
+FaqTitle=F.A.Q. Frequently Asked Question
+FeedbackHeader=Are you looking for new features? Send us a feedback
+AboutText1=We are Stefan and Alex, two guys in love with Wordpress, coding and marketing! Our company IntellyWP is an idea to bring Intelly ideas to your Intelly site ;)
+AboutText2=Feel free to reach us by the feedback form below.
+
+CodeDeleteNotice=Tracking code "#{0} ({1})" successfully deleted
+CodeUpdateNotice=Tracking code "#{0} ({1})" successfully updated
+CodeAddNotice=Tracking code "#{0} ({1})" successfully added
+
+FreeLicenseReached=You have reached the FREE version limit. Please buy the PREMIUM version or delete unused tracking code and create new ones.
+EditTitle=Edit tracking code
+EditSubtitle=Edit the information that you need and click "Save"
+AddTitle=New tracking code
+AddSubtitle=Fill in the information and click "Save"
+EnableAllowTrackingNotice1=Currently we receive plugin usage information. It allows us to have a BETTER development so many many thanks from the development team.
+EnableAllowTrackingNotice2=If you want to stop tracking please click <a href="{0}">HERE :(</a>
+DisableAllowTrackingNotice1=Ooops... Seems that you are not allowing us to receive plugin usage information. It allows us to have a BETTER development without collecting any sensitive-data.
+DisableAllowTrackingNotice2=Please allow us to receive this information click <a href="{0}">HERE :)</a>
+DisableAllowTrackingNotice3=Once enabled this box will disapear from Settings and only appear in About tab
+
+Editor.active=Active?
+Editor.name=Name
+Editor.code=Paste your Tracking Code here
+Editor.position.0=Before &lt;/HEAD&gt;
+Editor.position.1=After &lt;BODY&gt;
+Editor.position.2=Before &lt;/BODY&gt;
+Editor.position=Position inside the code
+Editor.includeEverywhereActive=Include in the whole website (pages, posts and archives)
+Editor.includeCategoriesActive=Include in posts with specific categories
+Editor.includeTagsActive=Include in posts with specific tags
+Editor.includePostsOfTypeActive=Include in "<b>{0}</b>"
+Editor.exceptCategoriesActive=Exclude in posts with specific categories
+Editor.exceptTagsActive=Exclude in posts with specific tags
+Editor.exceptPostsOfTypeActive=Exclude in "<b>{0}</b>"
+Editor.includeLastPostsActive=Include in latest posts (specify the number of posts)
+
+DeactivateSuccess=License key "{0}" successfully deactivated
+DeactivateError=Errors deactivating key. Network problem??
+ActivateSuccess1=License key "{0}" successfully activated
+ActivateSuccess2=CONGRATS...YOU ARE NOW A PREMIUM MEMBER! :)
+ActivateError=Errors activating key. Network problem or wrong password
+
+LicenseSection=License information
+LicenseSectionSubtitle=You can obtain your PREMIUM license key (that will unlock all the amazing features) click <a href="{0}" target="_new">HERE</a>
+MetaboxSection=Metabox integration
+MetaboxSectionSubtitle=You will display a metabox to disable the plugin in a specific post or page.
+License.metabox=In "<b>{0}</b>"
+License.key=Insert the activation key received by email
+EmptyTrackingList=Your tracking code list is empty, please <a href="{0}">CLICK HERE</a> to create new ones.
+
+Notice.ProHeader1=Do you like this plugin?
+Notice.ProHeader2=Using the <b>PREMIUM</b> version you can also include/exclude tracking code:
+Notice.ProFeature1=In your custom post type {0}
+Notice.ProFeature2=In the latest post
+Notice.ProFeature3=In specific categories
+Notice.ProFeature4=In specific tags
+
+QuestionActiveOn=Do you want to activate this code?
+QuestionActiveOff=Do you want to deactivate this code?
+
+UtmSection=UTM Settings
+UtmSectionSubtitle=You can obtain your PREMIUM license key (that will unlock all the amazing features) click <a href="{0}" target="_new">HERE</a>
+Settings.utm_active=Active in "WP Editor"?
+Settings.utm_active.Tooltip=Integrate UTM into default WP link button
+Settings.utm_prefill=Prefill with values
+Settings.utm_prefill.Tooltip=Prefill with values
+Settings.utm_source=utm_source
+Settings.utm_source.Tooltip=Used to describe where the traffic is coming from, for example the name of the website displaying your adverts or the newsletter name.
+Settings.utm_medium=utm_medium
+Settings.utm_medium.Tooltip=Used to describe the specific element, for example you may refer to banner placements or sizes dependant on which aspect you are split testing. Or it could be a product image in the newsletter case.
+Settings.utm_campaign=utm_campaign
+Settings.utm_campaign.Tooltip=This refers to the overall campaign you are running.  For example, if the new campaign you are launching is for a new phone (e.g. the K00z) then your campaign may be called ‘K00z_launch’
+
+GeneralSection=Style Settings
+GeneralSectionSubtitle=Just few settings and Kaboooom!!
+RewriteSection=Plugin Settings
+RewriteSectionSubtitle=Set the plugin's behavior.
+EngineSection=Engine Settings
+EngineSectionSubtitle=Choose how the plugin discovers similar posts
+PreviewSection=Real time preview (change some settings to refresh)
+PreviewSectionMaxTime=With these settings the plugin has ran in max {0} milliseconds
+Settings.irpActive=Active?
+Settings.irpText=Related text
+Settings.irpBackgroundColor=Background Color
+Settings.irpBorderColor=Border Color
+Settings.irpRewriteActive=Insert in already existing posts?
+Settings.irpRewriteBoxesCount=How many boxes per single post?
+Settings.irpRewritePostsInBoxCount=Max posts per box N.
+Settings.irpRewriteThresold=Interval between the boxes (minimum N° words)
+Settings.irpRewriteAtEnd=Insert a box at the end of the post? (if needed)
+Settings.irpRewritePostType=Use on <b>{0}</b>
+Settings.irpEngineSearch=Search similar posts
+Settings.irpEngineSearch.0=Using categories and tags
+Settings.irpEngineSearch.1=Using only categories
+Settings.irpEngineSearch.2=Using only tags
+Settings.irpShowPoweredBy=Display "Powered by" text<br/><i>(and show us some love :)</i>
+Settings.irpTemplate=Box template
+Settings.irpTemplateBackgroundColor=Background color
+Settings.irpTemplateBorderColor=Left border color
+Settings.irpTemplateShadow=Shadow?
+Settings.irpTemplateRelatedTextColor=Related Text Color
+TemplateName=Example template "{0}"
+FirstTimeActivation=Thank you for activating our plugin. This is the page settings where you need to start to configure it. You will see this box only the first time.
+Settings.metabox=Integrate in <b>"{0}"</b>
+EditorSubtitle=Select the post that you want to insert into the box automatically created by the Intelly Related Posts
+Faq.Question1=Why should I use this plugin?
+Faq.Response1=Because it will increase the page views on your site, improving engagement and reducing your bounce rate.
+Faq.Question2=Can I use the Inline related Posts plugin along with another Related posts plugin?
+Faq.Response2=Yes you can! Our plugin puts fancy boxes INSIDE the content, not at the end of it.
+Faq.Question3=Will this plugin break the structure of my content?
+Faq.Response3=NOPE. Our algorithm knows HTML tags and avoid placing the boxes in the wrong place!
+Faq.Question4=Do you have some others fancy box styles?
+Faq.Response4=Coming Soon!! We’re working hard to publish new styles, suggest us one sending us an <a href="mailto:aleste@intellywp.com">email</a>!
+Faq.Question5=Will this plugin slow my website?
+Faq.Response5=Absolutely Not! Inline Related Posts is built with lightweight code and you won’t notice any difference in speed using it.
