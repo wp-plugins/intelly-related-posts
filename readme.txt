@@ -30,10 +30,10 @@ Do you know that asking too many things is equal to ask nothing?
 Inline related posts plugin bring a new experience to your visitors and help you to win the fight of catching readers attention ;)
 
 > With Inline Related Posts Plugin you can:<br>
-> * <strong>Put related posts boxes INSIDE your content detecting AUTOMATICALLY line breaks</strong> (<a href="https://wordpress.org/plugins/intelly-related-posts/screenshots/">see Screenshots</a>)
-> * Automatically put multiple boxes in all your posts
-> * Automatically put boxes in line breaks (without destroy your paragraphs or headlines)
-> * Choose over 20 unique styles
+> <ul><li><strong>Put related posts boxes INSIDE your content detecting AUTOMATICALLY line breaks</strong> (<a href="https://wordpress.org/plugins/intelly-related-posts/screenshots/">see Screenshots</a>)</li>
+> <li>Automatically put multiple boxes in all your posts</li>
+> <li>Automatically put boxes in line breaks (without destroy your paragraphs or headlines)</li>
+> <li>Choose over 20 unique styles</li></ul>
 
 
 <a href="https://downloads.wordpress.org/plugin/intelly-related-posts.zip">Download now the Inline Related posts plugin into your Wordpress.</a>
