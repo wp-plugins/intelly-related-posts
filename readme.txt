@@ -11,7 +11,7 @@ Inline Related Posts AUTOMATICALLY inserts related posts INSIDE your content, CA
 
 Companies like Entrepreneur, The Wall Street Journal, BBC, Business Insider, Financial Times and many others understood this concept and embraced it as you can see in this GIF in <a href="https://wordpress.org/plugins/intelly-related-posts/screenshots/">Screenshots</a>.
 
-In <a href="http://www.intellywp.com">IntellyWP</a> we take care of the marketing aspects of your Wordpress site and today we have brought to you the same technology they use, to help you to increase engagement, page views and to reduce the bounce rate.
+In <a href="http://www.intellywp.com" target="_blank">IntellyWP</a> we take care of the marketing aspects of your Wordpress site and today we have brought to you the same technology they use, to help you to increase engagement, page views and to reduce the bounce rate.
 
 > <strong>Just one week after testing this plugin on a low traffic site, our page views increased by 99%.</strong>
 
@@ -44,7 +44,7 @@ Brought to you by IntellyWP. Intelly solution for your Intelly site ;)
 
 1. Download our plugin
 2. Upload to your /wp-contents/plugins/ directory.
-3. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Activate the plugin through the "Plugins" menu in WordPress.
 4. You will be redirected to Settings &gt;&gt; Inline Related Posts
 
 == Frequently Asked Questions ==
@@ -63,7 +63,7 @@ NOPE. Our algorithm knows HTML tags and avoid placing the boxes in the wrong pla
 
 = Do you have some others fancy box styles? =
 
-Coming Soon!! As we’re working hard to publish new styles, you can suggest us one of your favourites an by email! <a href="http://intellywp.com/contact">email</a>!
+Coming Soon!! As we’re working hard to publish new styles, you can suggest us one of your favourites an by email! <a href="http://intellywp.com/contact" target="_blank">email</a>!
 
 = Will this plugin slow my website? =
 
