@@ -76,7 +76,7 @@ Absolutely Not! Inline Related Posts is built with lightweight code so you wonâ€
 2. An example of a style that you can use
 3. Another example of a style that you can use
 4. Just another example of a style that you can use
-5. Our simple plugin configuration. So simple and so powerfull!
+5. Our simple plugin configuration.
 6. An example of our plugin in action, related posts box are placed AUTOMATICALLY 
 7. Or you can choose a custom article using shortcode
 
