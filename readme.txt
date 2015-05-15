@@ -38,7 +38,7 @@ Inline related posts plugin bring a new experience to your visitors and help you
 
 <a href="https://downloads.wordpress.org/plugin/intelly-related-posts.zip">Download now the Inline Related posts plugin into your Wordpress.</a>
 <br>
-Brought to you by IntellyWP. Intelly solution for your Intelly site ;)
+<i>Brought to you by IntellyWP. Intelly solution for your Intelly site</i> ;)
 
 == Installation ==
 
