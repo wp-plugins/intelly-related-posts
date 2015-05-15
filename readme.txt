@@ -32,7 +32,7 @@ Inline related posts plugin bring a new experience to your visitors and help you
 > With Inline Related Posts Plugin you can:<br>
 > 1. Put related posts boxes INSIDE your content (<a href="https://wordpress.org/plugins/intelly-related-posts/screenshots/">see Screenshots</a>)<br>
 > 2. Automatically put multiple boxes in all your posts<br>
-> 3. Automatically detect line breaks (without destroy your paragraphs or headlines)
+> 3. Automatically detect line breaks (without destroy your paragraphs or headlines)<br>
 > 4. Choose over 20 unique styles
 
 
