@@ -13,10 +13,10 @@ Companies like Entrepreneur, The Wall Street Journal, BBC, Business Insider, Fin
 
 In <a href="http://www.intellywp.com">IntellyWP</a> we take care of the marketing aspects of your Wordpress site and today we have brought to you the same technology they use, to help you to increase engagement, page views and to reduce the bounce rate.
 
-> <b>Just one week after testing this plugin on a low traffic site, our page views increased by 99%.</b>
+> <strong>Just one week after testing this plugin on a low traffic site, our page views increased by 99%.</strong>
 
-<b>ANOTHER IMPORTANT POINT OF VIEW</b>
-<br/>
+<strong>ANOTHER IMPORTANT POINT OF VIEW</strong>
+<br>
 How many things have you have in the footer post?
 
 * The author box?
@@ -29,15 +29,15 @@ Do you know that asking too many things is equal to ask nothing?
 
 Inline related posts plugin bring a new experience to your visitors and help you to win the fight of catching readers attention ;)
 
-> With Inline Related Posts Plugin you can:<br/>
-> * <b>Put related posts boxes INSIDE your content detecting AUTOMATICALLY line breaks</b> (<a href="https://wordpress.org/plugins/intelly-related-posts/screenshots/">see Screenshots</a>)
+> With Inline Related Posts Plugin you can:<br>
+> * <strong>Put related posts boxes INSIDE your content detecting AUTOMATICALLY line breaks</strong> (<a href="https://wordpress.org/plugins/intelly-related-posts/screenshots/">see Screenshots</a>)
 > * Automatically put multiple boxes in all your posts
 > * Automatically put boxes in line breaks (without destroy your paragraphs or headlines)
 > * Choose over 20 unique styles
 
 
 <a href="https://downloads.wordpress.org/plugin/intelly-related-posts.zip">Download now the Inline Related posts plugin into your Wordpress.</a>
-<br/>
+<br>
 Brought to you by IntellyWP. Intelly solution for your Intelly site ;)
 
 == Installation ==
