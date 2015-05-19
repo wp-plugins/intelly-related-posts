@@ -5,7 +5,7 @@ Tags: related post,related posts,inline related posts, inside related posts, sug
 Requires at least: 2.7
 Tested up to: 4.3
 
-Inline Related Posts AUTOMATICALLY inserts related posts INSIDE your content, CATCHING immediately reader's attention.
+Inline Related Posts AUTOMATICALLY inserts related posts INSIDE your content, capturing immediately the reader's attention.
 
 == Description ==
 
