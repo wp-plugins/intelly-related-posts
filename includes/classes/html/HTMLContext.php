@@ -433,6 +433,9 @@ class IRP_HTMLContext {
 
         $c=strlen($text);
         $words=explode(' ', $text);
+        $w=count($words);
+
+        /*
         $w=0;
         $minLowerCase=ord('a');
         $maxLowerCase=ord('z');
@@ -452,6 +455,8 @@ class IRP_HTMLContext {
                 }
             }
         }
+        */
+
         $this->currentWords+=$w;
         $irp->Logger->debug('INCREMENT WORDS %s/%s', $w, $this->currentWords);
     }

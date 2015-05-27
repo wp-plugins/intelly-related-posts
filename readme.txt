@@ -82,6 +82,12 @@ Absolutely Not! Inline Related Posts is built with lightweight code so you wonâ€
 
 == Changelog ==
 
+= 1.3.3 =
+*Release Date - 27/05/2015*
+
+* [Thanks to msshams] Bugfix persian language
+* [Thanks to reweb] Bugfix Parse error: syntax error, unexpected ':' in [...] wp-content/plugins/intelly-related-posts/index.php on line 118
+
 = 1.3.2 =
 *Release Date - 14/05/2015*
 

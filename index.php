@@ -6,12 +6,12 @@ Description: Finally the plugin to insert INLINE related posts :)
 Author: IntellyWP
 Author URI: http://intellywp.com/
 Email: aleste@intellywp.com
-Version: 1.3.2
+Version: 1.3.3
 */
 define('IRP_PLUGIN_PREFIX', 'IRP_');
 define('IRP_PLUGIN_FILE',__FILE__);
 define('IRP_PLUGIN_NAME', 'intelly-related-posts');
-define('IRP_PLUGIN_VERSION', '1.3.2');
+define('IRP_PLUGIN_VERSION', '1.3.3');
 define('IRP_PLUGIN_AUTHOR', 'IntellyWP');
 define('IRP_PLUGIN_ROOT', dirname(__FILE__).'/');
 define('IRP_PLUGIN_IMAGES', plugins_url( 'assets/images/', __FILE__ ));
@@ -115,7 +115,6 @@ class IRP_Tabs {
         global $irp;
         wp_enqueue_script('jquery');
         wp_enqueue_script('suggest');
-        http://localhost/test/wp-admin/load-styles.php?c=1&dir=ltr&load=dashicons,admin-bar,buttons,media-views,wp-admin,wp-auth-check,wp-color-picker&ver=4.2.2
         wp_enqueue_script('jquery-ui-autocomplete');
 
         wp_enqueue_style('irp-font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css');
