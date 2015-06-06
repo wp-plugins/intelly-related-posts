@@ -93,6 +93,7 @@ function irp_ui_get_box($ids, $options=NULL) {
         , 'borderColor'=>$irp->Options->getTemplateBorderColor()
         , 'shadow'=>$irp->Options->isTemplateShadow()
         , 'showPoweredBy'=>$irp->Options->isShowPoweredBy()
+        , 'rel'=>$irp->Options->getLinkRel()
         , 'comment'=>''
     );
     $options=$irp->Utils->parseArgs($options, $defaults);
@@ -152,19 +153,23 @@ function irp_ui_get_box($ids, $options=NULL) {
         }
 
         $first=TRUE;
+        $rel='';
+        if($options['rel']!='') {
+            $rel=' rel="'.$options['rel'].'"';
+        }
         foreach($posts as $v) {
             if(!$first) {
                 $body.=',&nbsp;';
             } else {
                 $first=FALSE;
             }
-            $body.="<a style=\"font-weight:bold;\" href=\"".get_permalink($v->ID)."\" target=\"_blank\">".$v->post_title."</a>";
+            $body.="<a style=\"font-weight:bold;\" href=\"".get_permalink($v->ID)."\" target=\"_blank\" ".$rel.">".$v->post_title."</a>";
         }
         if($options['showPoweredBy'] && $body!='') {
             $body.="<div style=\"width:100&#37;; text-align:right; font-weight: normal;\">";
             $body.="<div style=\"font-size:10px;\">";
             $body.="<span style=\"".$relatedTextColor."\">Intelly powered by</span>&nbsp;";
-            $body.="<a style=\"font-weight:bold;\" href=\"".IRP_PAGE_WORDPRESS."\" target=\"_blank\">";
+            $body.="<a rel=\"nofollow\" style=\"font-weight:bold;\" href=\"".IRP_PAGE_WORDPRESS."\" target=\"_blank\">";
             $body.="Inline Related Posts";
             $body.="</a>";
             $body.="</div>";

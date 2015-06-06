@@ -97,16 +97,23 @@ class IRP_Tracking {
         }
         $result['post_types']=$data;
 
-        $data=array('debug'=>(defined('WP_DEBUG') && WP_DEBUG)
+        $data=array(
+            'debug'=>(defined('WP_DEBUG') && WP_DEBUG)
             , 'maxTime'=>$irp->Options->getMaxExecutionTime()
             , 'active'=>$irp->Options->isActive()
-            , 'relatedText'=>$irp->Options->getRelatedText()
-            , 'relatedCssTemplate'=>$irp->Options->getRelatedCssTemplate()
-            , 'rewriteActive'=>$irp->Options->isRewriteActive()
-            , 'rewritePostsInBoxCount'=>$irp->Options->getRewritePostsInBoxCount()
-            , 'rewriteBoxesCount'=>$irp->Options->getRewriteBoxesCount()
-            , 'rewriteThreshold'=>$irp->Options->getRewriteThreshold()
             , 'engineSearch'=>$irp->Options->getEngineSearch()
+            , 'rewriteAtEnd'=>$irp->Options->isRewriteAtEnd()
+            , 'rewriteThresold'=>$irp->Options->getRewriteThreshold()
+            , 'rewriteBoxesCount'=>$irp->Options->getRewriteBoxesCount()
+            , 'rewriteActive'=>$irp->Options->isRewriteActive()
+            , 'linkRel'=>$irp->Options->getLinkRel()
+            , 'showPoweredBy'=>$irp->Options->isShowPoweredBy()
+            , 'templateShadow'=>$irp->Options->isTemplateShadow()
+            , 'templateBorderColor'=>$irp->Options->getTemplateBorderColor()
+            , 'templateBackgroundColor'=>$irp->Options->getTemplateBackgroundColor()
+            , 'templateRelatedTextColor'=>$irp->Options->getTemplateRelatedTextColor()
+            , 'metaboxPostTypes'=>$irp->Options->getMetaboxPostTypes()
+            , 'rewritePostTypes'=>$irp->Options->getRewritePostTypes()
         );
         $result['iwpm_plugin_name']=IRP_PLUGIN_NAME;
         $result['iwpm_plugin_version']=IRP_PLUGIN_VERSION;
@@ -137,7 +144,6 @@ class IRP_Tracking {
         //add_filter('https_local_ssl_verify', '__return_false');
         //add_filter('https_ssl_verify', '__return_false');
         //add_filter('block_local_requests', '__return_false');
-
         $data=$irp->Utils->remotePost('usage', $this->getData());
         if($data) {
             $result=intval($data['id']);

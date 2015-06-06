@@ -56,6 +56,7 @@ function irp_install($networkwide=NULL) {
     $colors['ASBESTOS']=array('color'=>'#7F8C8D');
     $irp->Options->setStyleDarkBorderColors($colors);
     $irp->Options->setPluginFirstInstall(TRUE);
+    $irp->Options->setTrackingLastSend(0);
 }
 
 add_action('admin_init', 'irp_first_redirect');

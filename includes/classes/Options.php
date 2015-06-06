@@ -203,6 +203,12 @@ class IRP_Options {
     public function setShowPoweredBy($value) {
         $this->setOption('ShowPoweredby', $value);
     }
+    public function getLinkRel() {
+        return $this->getOption('LinkRel', 'nofollow');
+    }
+    public function setLinkRel($value) {
+        $this->setOption('LinkRel', $value);
+    }
     //is related posts active in posts without any [irl] shortcodes defined
     public function isRewriteActive() {
         return $this->getOption('RewriteActive', 1);
@@ -473,59 +479,6 @@ class IRP_Options {
         $this->setRequest('Cache_'.$name.'_'.$id, $value);
     }
 
-    //ErrorMessages
-    public function hasErrorMessages() {
-        $result=$this->getRequest('ErrorMessages', NULL);
-        return (is_array($result) && count($result)>0);
-    }
-    public function pushErrorMessage($message, $v1=NULL, $v2=NULL, $v3=NULL, $v4=NULL, $v5=NULL) {
-        global $irp;
-        $array=$this->getRequest('ErrorMessages', array());
-        $array[]=$irp->Lang->L($message, $v1, $v2, $v3, $v4, $v5);
-        $this->setRequest('ErrorMessages', $array);
-    }
-    public function writeErrorMessages($clean=TRUE) {
-        global $irp;
-        $array=$this->getRequest('ErrorMessages', array());
-        if(is_array($array) && count($array)>0) { ?>
-            <div class="message error"><?php echo wpautop(implode("\n", $array)); ?></div>
-        <?php }
-        if($clean) {
-            $this->removeRequest('ErrorMessages');
-        }
-    }
-    //SuccessMessages
-    public function hasSuccessMessages() {
-        $result=$this->getRequest('SuccessMessages', NULL);
-        return (is_array($result) && count($result)>0);
-    }
-    public function pushSuccessMessage($message, $v1=NULL, $v2=NULL, $v3=NULL, $v4=NULL, $v5=NULL) {
-        global $irp;
-        $array=$this->getRequest('SuccessMessages', array());
-        $array[]=$irp->Lang->L($message, $v1, $v2, $v3, $v4, $v5);
-        $this->setRequest('SuccessMessages', $array);
-    }
-    public function writeSuccessMessages($clean=TRUE) {
-        $array=$this->getRequest('SuccessMessages', array());
-        if(is_array($array) && count($array)>0) { ?>
-            <div class="message updated"><?php echo wpautop(implode("\n", $array)); ?></div>
-        <?php }
-        if($clean) {
-            $this->removeRequest('SuccessMessages');
-        }
-    }
-    public function writeMessages($clean=TRUE) {
-        $this->writeErrorMessages($clean);
-        $this->writeSuccessMessages($clean);
-    }
-    public function pushMessage($success, $message, $v1=NULL, $v2=NULL, $v3=NULL, $v4=NULL, $v5=NULL) {
-        if($success) {
-            $this->pushSuccessMessage($message.'Success', $v1, $v2, $v3, $v4, $v5);
-        } else {
-            $this->pushErrorMessage($message.'Error', $v1, $v2, $v3, $v4, $v5);
-        }
-    }
-
     public function getFeedbackEmail() {
         return $this->getOption('FeedbackEmail', get_bloginfo('admin_email'));
     }
@@ -546,5 +499,95 @@ class IRP_Options {
     }
     public function getUsedCssTemplates() {
         return $this->getRequest('UsedCssTemplates', array());
+    }
+
+    private function hasGenericMessages($type) {
+        $result=$this->getRequest($type.'Messages', NULL);
+        return (is_array($result) && count($result)>0);
+    }
+
+    private function pushGenericMessage($type, $message, $v1=NULL, $v2=NULL, $v3=NULL, $v4=NULL, $v5=NULL) {
+        global $irp;
+        $array=$this->getRequest($type.'Messages', array());
+        $array[]=$irp->Lang->L($message, $v1, $v2, $v3, $v4, $v5);
+        $this->setRequest($type.'Messages', $array);
+    }
+    private function writeGenericMessages($type, $clean=TRUE) {
+        $result=FALSE;
+        $array=$this->getRequest($type.'Messages', array());
+        if(is_array($array) && count($array)>0) {
+            $result=TRUE;
+            ?>
+            <div class="irp-box-<?php echo strtolower($type)?>"><?php echo wpautop(implode("\n", $array)); ?></div>
+        <?php }
+        if($clean) {
+            $this->removeRequest($type.'Messages');
+        }
+        return $result;
+    }
+    //WarningMessages
+    public function hasWarningMessages() {
+        return $this->hasGenericMessages('Warning');
+    }
+    public function pushWarningMessage($message, $v1=NULL, $v2=NULL, $v3=NULL, $v4=NULL, $v5=NULL) {
+        return $this->pushGenericMessage('Warning', $message, $v1, $v2, $v3, $v4, $v5);
+    }
+    public function writeWarningMessages($clean=TRUE) {
+        return $this->writeGenericMessages('Warning', $clean);
+    }
+    //SuccessMessages
+    public function hasSuccessMessages() {
+        return $this->hasGenericMessages('Success');
+    }
+    public function pushSuccessMessage($message, $v1=NULL, $v2=NULL, $v3=NULL, $v4=NULL, $v5=NULL) {
+        return $this->pushGenericMessage('Success', $message, $v1, $v2, $v3, $v4, $v5);
+    }
+    public function writeSuccessMessages($clean=TRUE) {
+        return $this->writeGenericMessages('Success', $clean);
+    }
+    //InfoMessages
+    public function hasInfoMessages() {
+        return $this->hasGenericMessages('Info');
+    }
+    public function pushInfoMessage($message, $v1=NULL, $v2=NULL, $v3=NULL, $v4=NULL, $v5=NULL) {
+        return $this->pushGenericMessage('Info', $message, $v1, $v2, $v3, $v4, $v5);
+    }
+    public function writeInfoMessages($clean=TRUE) {
+        return $this->writeGenericMessages('Info', $clean);
+    }
+    //ErrorMessages
+    public function hasErrorMessages() {
+        return $this->hasGenericMessages('Error');
+    }
+    public function pushErrorMessage($message, $v1=NULL, $v2=NULL, $v3=NULL, $v4=NULL, $v5=NULL) {
+        return $this->pushGenericMessage('Error', $message, $v1, $v2, $v3, $v4, $v5);
+    }
+    public function writeErrorMessages($clean=TRUE) {
+        return $this->writeGenericMessages('Error', $clean);
+    }
+
+    public function writeMessages($clean=TRUE) {
+        $result=FALSE;
+        if($this->writeInfoMessages($clean)) {
+            $result=TRUE;
+        }
+        if($this->writeSuccessMessages($clean)) {
+            $result=TRUE;
+        }
+        if($this->writeWarningMessages($clean)) {
+            $result=TRUE;
+        }
+        if($this->writeErrorMessages($clean)) {
+            $result=TRUE;
+        }
+
+        return $result;
+    }
+    public function pushMessage($success, $message, $v1=NULL, $v2=NULL, $v3=NULL, $v4=NULL, $v5=NULL) {
+        if($success) {
+            $this->pushSuccessMessage($message.'Success', $v1, $v2, $v3, $v4, $v5);
+        } else {
+            $this->pushErrorMessage($message.'Error', $v1, $v2, $v3, $v4, $v5);
+        }
     }
 }

@@ -17,7 +17,7 @@ function irp_ui_tracking($override=FALSE) {
         }
     } else {
         $uri.='1';
-        $irp->Options->pushErrorMessage('DisableAllowTrackingNotice', $uri);
+        $irp->Options->pushWarningMessage('DisableAllowTrackingNotice', $uri);
     }
     $irp->Options->writeMessages();
 }
@@ -46,6 +46,8 @@ function irp_ui_box_preview() {
     $shadow=$irp->Utils->iqs('shadow', $shadow);
     $showPoweredBy=$irp->Options->isShowPoweredBy();
     $showPoweredBy=$irp->Utils->iqs('showPoweredBy', $showPoweredBy);
+    $rel=$irp->Options->getLinkRel();
+    $rel=$irp->Utils->qs('rel', $rel);
 
     $posts=get_posts('orderby=rand&numberposts='.$count);
     $ids=array();
@@ -65,6 +67,7 @@ function irp_ui_box_preview() {
         , 'borderColor'=>$borderColor
         , 'shadow'=>$shadow
         , 'showPoweredBy'=>$showPoweredBy
+        , 'rel'=>$rel
     );
     $box=irp_ui_get_box($ids, $args);
     echo $box;
@@ -78,25 +81,26 @@ function irp_ui_settings() {
     ?>
     <script>
         jQuery(function() {
-            function irp_val(name) {
+            function IRP_val(name) {
                 return jQuery('[name='+name+']').val();
             }
-            function irp_check(name) {
+            function IRP_check(name) {
                 return (jQuery('[name='+name+']').is(':checked') ? 1 : 0);
             }
-            function irp_changeRelatedBox() {
+            function IRP_changeRelatedBox() {
                 var request=jQuery.ajax({
                     url: ajaxurl
                     , method: "POST"
                     , data: {
                         'action': 'do_action'
                         , 'irp_action': 'ui_box_preview'
-                        , 'relatedText': irp_val('irpText')
-                        , 'relatedTextColor': irp_val('irpTemplateRelatedTextColor')
-                        , 'backgroundColor': irp_val('irpTemplateBackgroundColor')
-                        , 'borderColor': irp_val('irpTemplateBorderColor')
-                        , 'shadow': irp_check('irpTemplateShadow')
-                        , 'showPoweredBy': irp_check('irpShowPoweredBy')
+                        , 'relatedText': IRP_val('irpText')
+                        , 'relatedTextColor': IRP_val('irpTemplateRelatedTextColor')
+                        , 'backgroundColor': IRP_val('irpTemplateBackgroundColor')
+                        , 'borderColor': IRP_val('irpTemplateBorderColor')
+                        , 'shadow': IRP_check('irpTemplateShadow')
+                        , 'rel': IRP_val('irpLinkRel')
+                        , 'showPoweredBy': IRP_check('irpShowPoweredBy')
                     }
                     , dataType: "html"
                 });
@@ -106,13 +110,13 @@ function irp_ui_settings() {
                 });
             }
 
-            var array=['irpText', 'irpTemplateRelatedTextColor', 'irpTemplateBackgroundColor', 'irpTemplateBorderColor', 'irpTemplateShadow', 'irpShowPoweredBy'];
+            var array=['irpText', 'irpTemplateRelatedTextColor', 'irpTemplateBackgroundColor', 'irpTemplateBorderColor', 'irpTemplateShadow', 'irpShowPoweredBy', 'irpLinkRel'];
             for(i=0; i<array.length; i++) {
                 jQuery('[name='+array[i]+']').change(function() {
-                    irp_changeRelatedBox();
+                    IRP_changeRelatedBox();
                 });
             }
-            irp_changeRelatedBox();
+            IRP_changeRelatedBox();
         });
     </script>
     <?php
@@ -129,11 +133,12 @@ function irp_ui_settings() {
         $irp->Options->setTemplateBorderColor($irp->Utils->qs('irpTemplateBorderColor'));
         $irp->Options->setTemplateShadow($irp->Utils->iqs('irpTemplateShadow'), 0);
         $irp->Options->setShowPoweredBy($irp->Utils->iqs('irpShowPoweredBy'));
+        $irp->Options->setLinkRel($irp->Utils->qs('irpLinkRel'));
 
         $irp->Options->setRewriteActive($irp->Utils->iqs('irpRewriteActive'));
         $irp->Options->setRewriteBoxesCount($irp->Utils->iqs('irpRewriteBoxesCount', 1));
         //$irp->Options->setRewritePostsInBoxCount(intval($irp->Utils->qs('irpRewritePostsInBoxCount', '')));
-        $irp->Options->setRewriteThreshold($irp->Utils->iqs('irpRewriteThresold', 300));
+        $irp->Options->setRewriteThreshold($irp->Utils->iqs('irpRewriteThreshold', 300));
         $irp->Options->setRewriteAtEnd($irp->Utils->iqs('irpRewriteAtEnd'));
 
         $irp->Options->setEngineSearch($irp->Utils->iqs('irpEngineSearch', IRP_ENGINE_SEARCH_CATEGORIES_TAGS));
@@ -156,9 +161,11 @@ function irp_ui_settings() {
     $irp->Form->formStarts();
     $irp->Form->p('GeneralSection');
 
-    $args=array('class'=>'irp-hideShow irp-checkbox'
-    , 'irp-hideIfTrue'=>'false'
-    , 'irp-hideShow'=>'irp-active-box');
+    $args=array(
+        'class'=>'irp-hideShow irp-checkbox'
+        , 'irp-hideIfTrue'=>'false'
+        , 'irp-hideShow'=>'irp-active-box'
+    );
     $irp->Form->checkbox('irpActive', $irp->Options->isActive(), 1, $args);
     $args=array('id'=>'irp-active-box', 'name'=>'irp-active-box', 'style'=>'margin-top:10px;');
     $irp->Form->divStarts($args);
@@ -191,9 +198,11 @@ function irp_ui_settings() {
         <p id="relatedBoxExample" style="width:auto;"></p>
         <?php
         $irp->Form->p('RewriteSection');
-        $args=array('class'=>'irp-hideShow irp-checkbox'
-        , 'irp-hideIfTrue'=>'false'
-        , 'irp-hideShow'=>'irp-rewrite-box');
+        $args=array(
+            'class'=>'irp-hideShow irp-checkbox'
+            , 'irp-hideIfTrue'=>'false'
+            , 'irp-hideShow'=>'irp-rewrite-box'
+        );
         $irp->Form->checkbox('irpRewriteActive', $irp->Options->isRewriteActive(), 1, $args);
         $args=array('id'=>'irp-rewrite-box', 'name'=>'irp-rewrite-box', 'style'=>'margin-top:10px;');
         $irp->Form->divStarts($args);
@@ -205,7 +214,7 @@ function irp_ui_settings() {
             $options[]=array('id'=>3, 'name'=>3);
             //$irp->Form->select('irpRewritePostsInBoxCount', $irp->Options->getRewritePostsInBoxCount(), $options);
             $irp->Form->select('irpRewriteBoxesCount', $irp->Options->getRewriteBoxesCount(), $options);
-            $irp->Form->text('irpRewriteThresold', $irp->Options->getRewriteThreshold());
+            $irp->Form->text('irpRewriteThreshold', $irp->Options->getRewriteThreshold());
             $irp->Form->checkbox('irpRewriteAtEnd', $irp->Options->isRewriteAtEnd());
             $irp->Form->p('');
 
@@ -219,18 +228,32 @@ function irp_ui_settings() {
         $irp->Form->divEnds();
 
         $irp->Form->p('EngineSection');
-        $options=array(IRP_ENGINE_SEARCH_CATEGORIES_TAGS
-            , IRP_ENGINE_SEARCH_CATEGORIES
-            , IRP_ENGINE_SEARCH_TAGS);
-        $irp->Form->select('irpEngineSearch', $irp->Options->getEngineSearch(), $options);
+        $irp->Form->divStarts();
+        {
+            $options=array(
+                IRP_ENGINE_SEARCH_CATEGORIES_TAGS
+                , IRP_ENGINE_SEARCH_CATEGORIES
+                , IRP_ENGINE_SEARCH_TAGS
+            );
+            $irp->Form->select('irpEngineSearch', $irp->Options->getEngineSearch(), $options);
+            $options=array();
+            $options[]=array('id'=>'nofollow', 'name'=>'nofollow');
+            $options[]=array('id'=>'', 'name'=>'dofollow');
+            $irp->Form->select('irpLinkRel', $irp->Options->getLinkRel(), $options);
+        }
+        $irp->Form->divEnds();
 
         $irp->Form->p('MetaboxSection');
-        $metaboxes=$irp->Options->getMetaboxPostTypes();
-        $types=$irp->Utils->query(IRP_QUERY_POST_TYPES);
-        foreach($types as $v) {
-            $v=$v['name'];
-            $irp->Form->checkbox('metabox_'.$v, $metaboxes[$v]);
+        $irp->Form->divStarts();
+        {
+            $metaboxes=$irp->Options->getMetaboxPostTypes();
+            $types=$irp->Utils->query(IRP_QUERY_POST_TYPES);
+            foreach($types as $v) {
+                $v=$v['name'];
+                $irp->Form->checkbox('metabox_'.$v, $metaboxes[$v]);
+            }
         }
+        $irp->Form->divEnds();
     }
     $irp->Form->divEnds();
 

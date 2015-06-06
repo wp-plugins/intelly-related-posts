@@ -6,12 +6,12 @@ Description: Finally the plugin to insert INLINE related posts :)
 Author: IntellyWP
 Author URI: http://intellywp.com/
 Email: aleste@intellywp.com
-Version: 1.3.3
+Version: 1.3.4
 */
 define('IRP_PLUGIN_PREFIX', 'IRP_');
 define('IRP_PLUGIN_FILE',__FILE__);
 define('IRP_PLUGIN_NAME', 'intelly-related-posts');
-define('IRP_PLUGIN_VERSION', '1.3.3');
+define('IRP_PLUGIN_VERSION', '1.3.4');
 define('IRP_PLUGIN_AUTHOR', 'IntellyWP');
 define('IRP_PLUGIN_ROOT', dirname(__FILE__).'/');
 define('IRP_PLUGIN_IMAGES', plugins_url( 'assets/images/', __FILE__ ));
@@ -118,14 +118,15 @@ class IRP_Tabs {
         wp_enqueue_script('jquery-ui-autocomplete');
 
         wp_enqueue_style('irp-font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css');
-        wp_enqueue_style('irp-css', plugins_url('assets/css/style.css', __FILE__ ));
-        wp_enqueue_style('irp-select2-css', plugins_url('assets/deps/select2-3.5.2/select2.css', __FILE__ ));
-        wp_enqueue_script('irp-select2-js', plugins_url('assets/deps/select2-3.5.2/select2.min.js', __FILE__ ));
-        wp_enqueue_script('irp-starrr-js', plugins_url('assets/deps/starrr/starrr.js', __FILE__ ));
+        $v='?v='.IRP_PLUGIN_VERSION;
+        wp_enqueue_style('irp-css', plugins_url('assets/css/style.css', __FILE__ ).$v);
+        wp_enqueue_style('irp-select2-css', plugins_url('assets/deps/select2-3.5.2/select2.css', __FILE__ ).$v);
+        wp_enqueue_script('irp-select2-js', plugins_url('assets/deps/select2-3.5.2/select2.min.js', __FILE__ ).$v);
+        wp_enqueue_script('irp-starrr-js', plugins_url('assets/deps/starrr/starrr.js', __FILE__ ).$v);
 
-        wp_enqueue_script('jquery-qtip', plugins_url('assets/deps/qtip/jquery.qtip.min.js', __FILE__ ), array( 'jquery' ), '1.0.0-RC3', true );
+        wp_enqueue_script('jquery-qtip', plugins_url('assets/deps/qtip/jquery.qtip.min.js', __FILE__ ), array( 'jquery' ).$v, '1.0.0-RC3', true );
 
-        wp_register_script('irp-common', plugins_url('assets/js/common.js', __FILE__ ), array('jquery', 'jquery-ui-autocomplete'), '1.0', FALSE);
+        wp_register_script('irp-common', plugins_url('assets/js/common.js', __FILE__ ).$v, array('jquery', 'jquery-ui-autocomplete'), '1.0', FALSE);
         wp_enqueue_script('irp-common');
     }
 

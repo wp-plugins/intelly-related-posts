@@ -82,6 +82,11 @@ Absolutely Not! Inline Related Posts is built with lightweight code so you wonâ€
 
 == Changelog ==
 
+= 1.3.4 =
+*Release Date - 06/06/2015*
+
+* Added rel="nofollow" by default with a dropdown where you can choose also dofollow if you prefer
+
 = 1.3.3 =
 *Release Date - 27/05/2015*
 
