@@ -1,49 +1,122 @@
-/**
- * Created by alessio on 15/04/2015.
- */
-jQuery(function() {
-    jQuery(".irp-hideShow").click(function () {
-        irp_hideShow(this);
-    });
-    jQuery(".irp-hideShow").each(function () {
-        irp_hideShow(this);
-    });
+//IntellyWP
+function IRP_stripos(haystack, needle, offset) {
+    //  discuss at: http://phpjs.org/functions/stripos/
+    // original by: Martijn Wieringa
+    //  revised by: Onno Marsman
+    //   example 1: stripos('ABC', 'a');
+    //   returns 1: 0
 
-    jQuery(".irpTags").select2({
-        placeholder: "Type here..."
-        , theme: "classic"
-        , width: '300px'
+    var haystack = (haystack + '').toLowerCase();
+    var needle = (needle + '').toLowerCase();
+    var index = 0;
+
+    if ((index = haystack.indexOf(needle, offset)) !== -1) {
+        return index;
+    }
+    return false;
+}
+function IRP_val(name) {
+    return jQuery('[name='+name+']').val();
+}
+function IRP_check(name) {
+    return (jQuery('[name='+name+']').is(':checked') ? 1 : 0);
+}
+function IRP_radio(name) {
+    return (jQuery('[name='+name+']:checked').val());
+}
+function IRP_visible(name, visible) {
+    if(visible) {
+        jQuery(name).hide();
+    } else {
+        jQuery(name).show();
+    }
+}
+function IRP_aval(name) {
+    var data={};
+    jQuery("[name^='"+name+"']").each(function(i,v) {
+        var $this=jQuery(this);
+        var k=$this.attr('name');
+        var v=$this.val();
+        if($this.attr('type')=='checkbox') {
+            v=IRP_check(k);
+        } else if($this.attr('type')=='radio') {
+            v=IRP_radio(k);
+        }
+        data[k]=v;
     });
+    //console.log(data);
+    return data;
+}
+function IRP_formatColorOption(option) {
+    if (!option.id) {
+        return option.text;
+    }
 
-    //mostra o nasconde un div collegato ad una checkbox
-    function irp_hideShow(v) {
-        var $source = jQuery(v);
-        if ($source.attr('irp-hideIfTrue') && $source.attr('irp-hideShow')) {
-            var $destination = jQuery('[name=' + $source.attr('irp-hideShow') + ']');
-            if ($destination.length == 0) {
-                $destination = jQuery('#' + $source.attr('irp-hideShow'));
-            }
-            if ($destination.length > 0) {
-                var isChecked = $source.is(":checked");
-                var hideIfTrue = ($source.attr('irp-hideIfTrue').toLowerCase() == 'true');
+    var color=jQuery(option.element).css('background-color');
+    var font=jQuery(option.element).css('color');
+    var $option = jQuery('<div></div>')
+        .html(option.text)
+        .css('background-color', color)
+        .css('color', font)
+        .addClass('irpColorSelectItem');
+    return $option;
+}
+function IRP_hideShow(v) {
+    var $source = jQuery(v);
+    if ($source.attr('irp-hideIfTrue') && $source.attr('irp-hideShow')) {
+        var $destination = jQuery('[name=' + $source.attr('irp-hideShow') + ']');
+        if ($destination.length == 0) {
+            $destination = jQuery('#' + $source.attr('irp-hideShow'));
+        }
+        if ($destination.length > 0) {
+            var isChecked = $source.is(":checked");
+            var hideIfTrue = ($source.attr('irp-hideIfTrue').toLowerCase() == 'true');
 
-                if (isChecked) {
-                    if (hideIfTrue) {
-                        $destination.hide();
-                    } else {
-                        $destination.show();
-                    }
+            if (isChecked) {
+                if (hideIfTrue) {
+                    $destination.hide();
                 } else {
-                    if (hideIfTrue) {
-                        $destination.show();
-                    } else {
-                        $destination.hide();
-                    }
+                    $destination.show();
+                }
+            } else {
+                if (hideIfTrue) {
+                    $destination.show();
+                } else {
+                    $destination.hide();
                 }
             }
         }
     }
+}
 
+jQuery(function() {
+    jQuery(".irp-hideShow").click(function () {
+        IRP_hideShow(this);
+    });
+    jQuery(".irp-hideShow").each(function () {
+        IRP_hideShow(this);
+    });
+
+    if(jQuery(".irpTags").length>0) {
+        jQuery(".irpTags").select2({
+            placeholder: "Type here..."
+            , theme: "classic"
+            , width: '300px'
+        });
+    }
+
+    if(jQuery(".irpColorSelect").length>0) {
+        jQuery(".irpColorSelect").select2({
+            placeholder: "Type here..."
+            , theme: "classic"
+            , width: '300px'
+            , formatResult: IRP_formatColorOption
+            , formatSelection: IRP_formatColorOption
+            , escapeMarkup: function(m) {
+                return m;
+            }
+        });
+    }
     if(jQuery('.irp-help').qtip) {
         jQuery('.irp-help').qtip({
             position: {

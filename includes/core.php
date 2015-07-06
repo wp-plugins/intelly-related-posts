@@ -2,8 +2,11 @@
 add_filter('wp_head', 'irp_head');
 function irp_head(){
     global $post, $irp;
+    if($irp->Plugin->isActive(IRP_PLUGINS_INTELLY_RELATED_POSTS_PRO)) {
+        return;
+    }
 
-    $irp->Logger->startTime('irp_head');
+    $irp->Log->startTime('irp_head');
     $irp->Options->initRelatedPostsIds(NULL);
     $irp->Options->setPostShown(NULL);
     if($post && isset($post->ID) && is_single($post->ID)) {
@@ -11,208 +14,254 @@ function irp_head(){
         $args=array('postId'=>$post->ID, 'shuffle'=>TRUE, 'count'=>-1);
         $ids=$irp->Manager->getRelatedPostsIds($args);
         $irp->Options->initRelatedPostsIds($ids);
-        $irp->Logger->info('POST ID=%s IS SHOWN, RELATED POSTS=%s', $post->ID, $ids);
+        $irp->Log->info('POST ID=%s IS SHOWN, RELATED POSTS=%s', $post->ID, $ids);
     }
-    $irp->Logger->pauseTime();
+    $irp->Log->pauseTime();
 }
 add_filter('wp_footer', 'irp_footer');
-add_filter('admin_footer', 'irp_footer');
+//add_filter('admin_footer', 'irp_footer');
 function irp_footer() {
     global $irp;
+    if($irp->Plugin->isActive(IRP_PLUGINS_INTELLY_RELATED_POSTS_PRO)) {
+        return;
+    }
 
-    $irp->Logger->startTime('irp_footer');
-    //print only the required css, the css already written
-    //skip this part...now we write inline style
-    /*
-    $css=$irp->Options->getUsedCssTemplates();
-    if(count($css)>0) {
-        echo '<style>';
-        foreach($css as $k=>$v) {
-            echo '.'.$v.' {';
-            $v=$irp->Options->getCssTemplate($k);
-            echo '  '.$v;
-            echo '}';
+    $irp->Log->startTime('irp_footer');
+    $array=$irp->Options->getCssStyles();
+    if(count($array)>0) {
+        echo "<style>\n";
+        foreach($array as $v) {
+            echo $v;
+            echo "\n";
         }
-        echo '</style>';
+        echo "</style>\n";
     }
-    */
-    $irp->Logger->pauseTime();
-    $irp->Logger->stopTime();
+    $irp->Log->pauseTime();
+    $irp->Log->stopTime();
 }
-add_shortcode('irp', 'irp_shortcode');
+
+if(!shortcode_exists('irp')) {
+    add_shortcode('irp', 'irp_shortcode');
+    add_shortcode('irpx', 'irp_shortcode');
+}
 function irp_shortcode($atts, $content='') {
-    global $irp;
-
-    $irp->Logger->startTime('irp_shortcode');
-    $post=$irp->Options->getPostShown();
-    if(!$post|| !$irp->Options->isActive() || $irp->Options->isPostShownExcluded()) {
+    global $irp, $post;
+    if($irp->Plugin->isActive(IRP_PLUGINS_INTELLY_RELATED_POSTS_PRO)) {
+        return;
+    }
+    if(!$irp->Options->isActive()) {
         return '';
     }
 
-    $default=array('posts'=>'', 'cats'=>'', 'tags'=>'', 'count'=>1);
-    $args=shortcode_atts($default, $atts);
-    if(isset($args['postId'])) {
-        unset($args['postId']);
+    $default=array(
+        'posts'=>''
+        , 'cats'=>''
+        , 'tags'=>''
+        , 'count'=>1
+        , 'theme'=>''
+        , 'demo'=>FALSE
+        , 'ctaText'=>'default'
+        , 'ctaTextColor'=>'default'
+        , 'postTitleColor'=>'default'
+        , 'boxColor'=>'default'
+        , 'borderColor'=>'default'
+        , 'hasPoweredBy'=>'default'
+        , 'hasShadow'=>'default'
+        , 'defaultsColors'=>FALSE
+        , 'includeCss'=>TRUE
+    );
+    $options=$irp->Utils->shortcodeAtts($default, $atts);
+    if(isset($options['postId'])) {
+        unset($options['postId']);
     }
-    $args['count']=intval($args['count']);
-    if($args['count']<=0) {
+    $options['demo']=$irp->Utils->isTrue($options['demo']);
+    $options['count']=intval($options['count']);
+    if($options['count']<=0) {
         return '';
     }
 
-    if($args['posts']=='' && $args['cats']=='' && $args['tags']=='') {
+    if($options['posts']=='' && $options['cats']=='' && $options['tags']=='') {
         //dynamic
-        $ids=$args['count'];
+        $ids=$irp->Options->getToShowPostsIds($options['count'], TRUE);
     } else {
+        if($options['posts']=='current' && $post && isset($post->ID)) {
+            $options['posts']=$post->ID;
+        }
         //static
-        $ids=$irp->Manager->getRelatedPostsIds($args);
+        $ids=$irp->Manager->getRelatedPostsIds($options);
     }
 
-    $ids=$irp->Options->getToShowPostsIds($ids, TRUE);
-    $result=irp_ui_get_box($ids);
+    $keys=array('ctaText', 'ctaTextColor', 'postTitleColor', 'boxColor', 'borderColor', 'hasPoweredBy', 'hasShadow');
+    foreach($keys as $k) {
+        if($options[$k]=='default') {
+            unset($options[$k]);
+        }
+    }
+    $result=irp_ui_get_box($ids, $options);
     if($result!='') {
         $irp->Options->setShortcodeUsed(TRUE);
     }
-
-    $irp->Logger->pauseTime();
     return $result;
 }
 
 function irp_ui_get_box($ids, $options=NULL) {
     global $irp;
-
+    if($irp->Plugin->isActive(IRP_PLUGINS_INTELLY_RELATED_POSTS_PRO)) {
+        return "";
+    }
     if(!is_array($ids) || count($ids)==0) {
         return "";
     }
+    if(!is_array($options)) {
+        $options=array();
+    }
 
-    $irp->Logger->startTime('irp_ui_get_box');
+    $irp->Log->startTime('irp_ui_get_box');
     $defaults=array(
-        'embedCss'=>TRUE
-        , 'relatedText'=>$irp->Options->getRelatedText()
-        , 'relatedTextColor'=>$irp->Options->getTemplateRelatedTextColor()
-        , 'backgroundColor'=>$irp->Options->getTemplateBackgroundColor()
-        , 'borderColor'=>$irp->Options->getTemplateBorderColor()
-        , 'shadow'=>$irp->Options->isTemplateShadow()
-        , 'showPoweredBy'=>$irp->Options->isShowPoweredBy()
-        , 'rel'=>$irp->Options->getLinkRel()
+        'includeCss'=>FALSE
         , 'comment'=>''
+        , 'shortcode'=>FALSE
+        , 'preview'=>FALSE
+        , 'theme'=>''
+        , 'demo'=>FALSE
+        , 'array'=>FALSE
+        , 'defaultsColors'=>FALSE
     );
     $options=$irp->Utils->parseArgs($options, $defaults);
-
-    $posts=array();
-    foreach($ids as $postId) {
-        $v=get_post($postId);
-        if($v) {
-            $posts[]=$v;
-        }
-    }
     $body='';
-    if(count($posts)>0) {
-        if(TRUE || $options['embedCss']) {
-            $key=$options['relatedTextColor'];
-            $array=$irp->Options->getStyleRelatedTextColors();
-            $relatedTextColor=$irp->Utils->getArrayValue($key, $array, 'color');
+    if($options['shortcode']) {
+        $body='[irpx posts="'.implode(',', $ids).'" comment="'.$options['comment'].'"]';
+    } else {
+        $defaults=$irp->Options->getTemplateStyle();
+        $options=$irp->Utils->parseArgs($options, $defaults);
+        if($options['theme']!='') {
+            $options['template']=$options['theme'];
+        }
+        unset($options['theme']);
 
-            $key=$options['backgroundColor'];
-            $array=$irp->Options->getStyleBackgroundColors();
-            $backgroundColor=$irp->Utils->getArrayValue($key, $array, 'color');
+        $posts=array();
+        foreach($ids as $postId) {
+            $v=get_post($postId);
+            if($v) {
+                $posts[]=$v;
+            }
+        }
+        if(count($posts)>0) {
+            foreach($posts as $v) {
+                $options['postHref']=get_permalink($v->ID);
+                $options['postTitle']=$v->post_title;
 
-            $key=$options['borderColor'];
-            $array=$irp->Options->getStyleDarkBorderColors();
-            $borderColor=$irp->Utils->getArrayValue($key, $array, 'color');
-            if($borderColor===FALSE) {
-                $key=$options['borderColor'];
-                $array=$irp->Options->getStyleLightBorderColors();
-                $borderColor=$irp->Utils->getArrayValue($key, $array, 'color');
+                $options['postImageUrl']='';
+                //$options['postImageWidth']=0;
+                //$options['postImageHeight']=0;
+                $attachmentId=get_post_thumbnail_id($v->ID);
+                if($attachmentId!==FALSE && $attachmentId!=='' && intval($attachmentId)>0) {
+                    $array=wp_get_attachment_image_src($attachmentId, 'medium');
+                    if($array!==FALSE) {
+                        $options['postImageUrl']=$array[0];
+                        //$options['postImageWidth']=$array[1];
+                        //$options['postImageHeight']=$array[2];
+                    }
+                }
+                break;
             }
 
-            $shadow=intval($options['shadow']);
-            $style='padding:10px; font-weight:bold; margin-top:1em; margin-bottom:1em';
-            if($relatedTextColor!==FALSE && $relatedTextColor!='') {
-                $relatedTextColor='; color:'.$relatedTextColor;
+            if($irp->Utils->isTrue($options['defaultsColors'])) {
+                $defaults = $irp->HtmlTemplate->getDefaults();
+                $defaults = $defaults[$options['template']];
+                foreach ($defaults as $k => $v) {
+                    $options[$k] = $v;
+                }
             }
-            if($backgroundColor!==FALSE && $backgroundColor!='') {
-                $style.='; background-color:'.$backgroundColor;
-            }
-            if($borderColor!==FALSE && $borderColor!='') {
-                $style.='; border-left:4px solid '.$borderColor;
-            }
-            if($shadow!==FALSE && $shadow) {
-                $style.='; '.$irp->Options->getStyleShadow();
+            if($irp->Utils->isTrue($options['demo'])) {
+                $options['postHref']='javascript:void(0);';
+                $options['linkRel']='nofollow';
+                $options['linkTarget']='';
+                //$options['hasShadow']=TRUE;
+                //$options['hasPoweredBy']=1;
+                $ctaText=$irp->Utils->qs('ctaText');
+                if($ctaText!='') {
+                    $options['ctaText']=$ctaText;
+                }
+                $postTitle=$irp->Utils->qs('postTitle');
+                $postTitle=str_replace("\\\"", "\"", $postTitle);
+                if($postTitle!='') {
+                    $options['postTitle']=$postTitle;
+                }
+                $uri=$irp->Utils->qs('postImageUrl');
+                //$w=$irp->Utils->iqs('postImageWidth');
+                //$h=$irp->Utils->iqs('postImageHeight');
+                if($uri!='') {
+                    $options['postImageUrl']=$uri;
+                    //$options['postImageWidth']=$w;
+                    //$options['postImageHeight']=$h;
+                }
+            } elseif($irp->Utils->isTrue($options['preview'])) {
+                $options['postHref']='javascript:IRP_changeRelatedBox();';
+                $options['linkRel']='nofollow';
+                $options['linkTarget']='';
             }
 
-            $body.="<div style=\"".$style."\">";
-        } else {
-            $class=$irp->Options->useCssTemplate($options['template']);
-            $body.="<div class=\"".$class."\">";
-        }
-        if($options['comment']!='') {
-            $body.=$options['comment'];
-        }
-        if($options['relatedText']!='') {
-            $body.="<span style=\"font-weight:bold".$relatedTextColor."\">".$options['relatedText']."</span>&nbsp;";
-        }
-
-        $first=TRUE;
-        $rel='';
-        if($options['rel']!='') {
-            $rel=' rel="'.$options['rel'].'"';
-        }
-        foreach($posts as $v) {
-            if(!$first) {
-                $body.=',&nbsp;';
-            } else {
-                $first=FALSE;
+            $body=$options;
+            if($options['array']==FALSE) {
+                $body=$irp->HtmlTemplate->html($options['template'], $options, $options);
             }
-            $body.="<a style=\"font-weight:bold;\" href=\"".get_permalink($v->ID)."\" target=\"_blank\" ".$rel.">".$v->post_title."</a>";
         }
-        if($options['showPoweredBy'] && $body!='') {
-            $body.="<div style=\"width:100&#37;; text-align:right; font-weight: normal;\">";
-            $body.="<div style=\"font-size:10px;\">";
-            $body.="<span style=\"".$relatedTextColor."\">Intelly powered by</span>&nbsp;";
-            $body.="<a rel=\"nofollow\" style=\"font-weight:bold;\" href=\"".IRP_PAGE_WORDPRESS."\" target=\"_blank\">";
-            $body.="Inline Related Posts";
-            $body.="</a>";
-            $body.="</div>";
-            $body.="</div>";
-        }
-        $body.="</div>";
     }
-    $irp->Logger->pauseTime();
+    $irp->Log->pauseTime();
     return $body;
 }
 
-//add_filter('the_content', 'irp_the_content');
+/*add_filter('the_content', 'irp_fix_the_content');
+function irp_fix_the_content($content) {
+    //this is to prevent wrong rewrite of WP of our content
+    $content=str_replace("<p></a></p>", "</a>", $content);
+    $content=str_replace("<p></a>", "</a>", $content);
+    return $content;
+}*/
 add_filter('wp_head', 'irp_the_content');
 function irp_the_content() {
     global $irp, $post;
+    if($irp->Plugin->isActive(IRP_PLUGINS_INTELLY_RELATED_POSTS_PRO)) {
+        return;
+    }
 
-    $irp->Logger->startTime('irp_the_content');
+    $irp->Log->startTime('irp_the_content');
     if(!$post || !isset($post->post_content) || $post->post_content=='') {
         return;
     }
 
     $irp->Options->setPostShown($post);
     if(!$post || $irp->Options->isPostShownExcluded()) {
-        $irp->Logger->error('TheContent: POST UNDEFINED OR POST EXCLUDED');
+        $irp->Log->error('TheContent: POST UNDEFINED OR POST EXCLUDED');
         return;
     }
     if(!$irp->Options->isActive() || !$irp->Options->isRewriteActive()
         || $irp->Options->isShortcodeUsed() || !$irp->Options->hasRelatedPostsIds()) {
-        $irp->Logger->error('TheContent: NOT ACTIVE OR SHORTCODE USED OR WITHOUT RELATED POSTS');
+        $irp->Log->error('TheContent: NOT ACTIVE OR SHORTCODE USED OR WITHOUT RELATED POSTS');
         return;
     }
 
     $body=$post->post_content;
     if(strpos($body, '[irp')!==FALSE) {
-        $irp->Logger->error('TheContent: SHORTCODE DETECTED');
+        $irp->Log->error('TheContent: SHORTCODE DETECTED');
         $irp->Options->setShortcodeUsed(TRUE);
         return;
     }
 
     $context=new IRP_HTMLContext();
     $body=$context->execute($body);
-    $irp->Logger->pauseTime();
-    $irp->Logger->info('TheContent: BODY SUCCESSULLY CREATED');
+    $irp->Log->pauseTime();
+    $irp->Log->info('TheContent: BODY SUCCESSULLY CREATED');
+    //$body=apply_filters('the_content', $body);
     $post->post_content=$body;
+}
+function irp_ui_first_time() {
+    global $irp;
+    if($irp->Options->isShowActivationNotice()) {
+        //$tcmp->Options->pushSuccessMessage('FirstTimeActivation');
+        //$tcmp->Options->writeMessages();
+        $irp->Options->setShowActivationNotice(FALSE);
+    }
 }
 

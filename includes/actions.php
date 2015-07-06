@@ -29,10 +29,10 @@ function irp_do_action() {
         $args=array_merge($_GET, $_POST, $_COOKIE, $_SERVER);
         $name='irp_'.$irp->Utils->qs('irp_action');
         if(has_action($name)) {
-            $irp->Logger->debug('EXECUTING ACTION=%s', $name);
+            $irp->Log->debug('EXECUTING ACTION=%s', $name);
             do_action($name, $args);
         } elseif(function_exists($name)) {
-            $irp->Logger->debug('EXECUTING FUNCTION=%s DATA=%s', $name, $args);
+            $irp->Log->debug('EXECUTING FUNCTION=%s DATA=%s', $name, $args);
             call_user_func($name, $args);
         } elseif(strpos($irp->Utils->qs('irp_action'), '_')!==FALSE) {
             $pos=strpos($irp->Utils->qs('irp_action'), '_');
@@ -53,15 +53,15 @@ function irp_do_action() {
             }
 
             if(!$class) {
-                $irp->Logger->fatal('NO CLASS FOR=%s IN ACTION=%s', $what, $irp->Utils->qs('irp_action'));
+                $irp->Log->fatal('NO CLASS FOR=%s IN ACTION=%s', $what, $irp->Utils->qs('irp_action'));
             } elseif(!method_exists ($class, $function)) {
-                $irp->Logger->fatal('NO METHOD FOR=%s IN CLASS=%s IN ACTION=%s', $function, $what, $irp->Utils->qs('irp_action'));
+                $irp->Log->fatal('NO METHOD FOR=%s IN CLASS=%s IN ACTION=%s', $function, $what, $irp->Utils->qs('irp_action'));
             } else {
-                $irp->Logger->debug('METHOD=%s OF CLASS=%s', $function, $what);
+                $irp->Log->debug('METHOD=%s OF CLASS=%s', $function, $what);
                 call_user_func(array($class, $function), $args);
             }
         } else {
-            $irp->Logger->fatal('NO FUNCTION FOR==%s', $irp->Utils->qs('irp_action'));
+            $irp->Log->fatal('NO FUNCTION FOR==%s', $irp->Utils->qs('irp_action'));
         }
 	}
 }

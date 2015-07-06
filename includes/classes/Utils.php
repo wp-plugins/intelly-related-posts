@@ -46,7 +46,6 @@ class IRP_Utils {
         return substr($text, $start, $length);
     }
 
-
     function toCommaArray($array, $isNumeric=TRUE, $isTrim=TRUE) {
         if(is_string($array)) {
             if(trim($array)=='') {
@@ -54,6 +53,8 @@ class IRP_Utils {
             } else {
                 $array=explode(',', $array);
             }
+        } elseif(is_numeric($array)) {
+            $array=array($array);
         }
         if(!is_array($array)) {
             $array=array();
@@ -145,6 +146,23 @@ class IRP_Utils {
     <?php
     }
 
+    function aqs($prefix, $defaults=array()) {
+        global $irp;
+
+        $removePrefix=TRUE;
+        $args=array();
+        $array=$this->merge(TRUE, $_POST, $_GET);
+        foreach($array as $k=>$v) {
+            if($this->startsWith($k, $prefix)) {
+                if($removePrefix) {
+                    $k=substr($k, strlen($prefix));
+                }
+                $args[$k]=$v;
+            }
+        }
+        $args=$irp->Utils->parseArgs($args, $defaults);
+        return $args;
+    }
     function iqs($name, $default = 0) {
         return intval($this->qs($name, $default));
     }
@@ -250,18 +268,36 @@ class IRP_Utils {
             , 'httpversion' => '1.1'
             , 'blocking' => TRUE
             , 'body' => $data
-            , 'user-agent' => 'IRP/' . IRP_PLUGIN_VERSION . '; ' . get_bloginfo('url')
+            , 'user-agent' => 'IRPP/' . IRP_PLUGIN_VERSION . '; ' . get_bloginfo('url')
         ));
         $data = json_decode(wp_remote_retrieve_body($response), TRUE);
         if (is_wp_error($response) || wp_remote_retrieve_response_code($response) != 200
             || !isset($data['success']) || !$data['success']
         ) {
-            $irp->Logger->error('ERRORS SENDING REMOTE-POST ACTION=%s DUE TO REASON=%s', $action, $response);
+            $irp->Log->error('ERRORS SENDING REMOTE-POST ACTION=%s DUE TO REASON=%s', $action, $response);
             $data = FALSE;
         } else {
-            $irp->Logger->debug('SUCCESSFULLY SENT REMOTE-POST ACTION=%s RESPONSE=%s', $action, $data);
+            $irp->Log->debug('SUCCESSFULLY SENT REMOTE-POST ACTION=%s RESPONSE=%s', $action, $data);
         }
         return $data;
+    }
+
+    function shortcodeAtts($defaults, $atts) {
+        if(!is_array($atts)) {
+            $atts=array();
+        }
+
+        $array=array();
+        foreach($defaults as $k=>$v) {
+            if (array_key_exists($k, $atts) ) {
+                $array[$k] = $atts[$k];
+            } elseif (array_key_exists(strtolower($k), $atts) ) {
+                $array[$k] = $atts[strtolower($k)];
+            } else {
+                $array[$k] = $v;
+            }
+        }
+        return $array;
     }
 
     //wp_parse_args with null correction
@@ -350,5 +386,94 @@ class IRP_Utils {
         remove_all_actions('wp_print_scripts');
         print_head_scripts();
         print_admin_styles();
+    }
+
+    public function sort($isAssociative, $a1, $a2=NULL, $a3=NULL, $a4=NULL, $a5=NULL) {
+        $array=$this->merge($isAssociative, $a1, $a2, $a3, $a4, $a5);
+        ksort($array);
+        return $array;
+    }
+    public function merge($isAssociative, $a1, $a2=NULL, $a3=NULL, $a4=NULL, $a5=NULL) {
+        $result=array();
+        if($isAssociative) {
+            $array=array($a1, $a2, $a3, $a4, $a5);
+            foreach($array as $a) {
+                if(!is_array($a)) {
+                    continue;
+                }
+
+                foreach($a as $k=>$v) {
+                    if(!isset($result[$k])) {
+                        $result[$k]=$v;
+                    }
+                }
+            }
+        } else {
+            $result=array_merge($a1, $a2, $a3, $a4, $a5);
+        }
+        return $result;
+    }
+    function get($array, $name, $default='') {
+        $result=$default;
+        if(isset($array[$name])) {
+            $result=$array[$name];
+        }
+        return $result;
+    }
+    function geti($array, $name, $default='') {
+        $result=$default;
+        $name=strtolower($name);
+        foreach($array as $k=>$v) {
+            if(strtolower($k)==$name) {
+                $result=$v;
+                break;
+            }
+        }
+        if(isset($array[$name])) {
+            $result=$array[$name];
+        }
+        return $result;
+    }
+    function iget($array, $name, $default='') {
+        return intval($this->get($array, $name, $default));
+    }
+    function isTrue($value) {
+        $result=FALSE;
+        if(is_bool($value)) {
+            $result=(bool)$value;
+        } elseif(is_numeric($value)) {
+            $result=floatval($value)>0;
+        } elseif(is_string($value)) {
+            $result=strtolower($value);
+            if($result=='ok' || $result=='yes' || $result=='true') {
+                $result=TRUE;
+            }
+        }
+        return $result;
+    }
+    function trimCode($code) {
+        $code=str_replace("\t", "", $code);
+        $code=str_replace("\r", "", $code);
+        $code=str_replace("\n", "", $code);
+        while(strpos($code, "  ")!==FALSE) {
+            $code=str_replace("  ", " ", $code);
+        }
+        $code=str_replace("> <", "><", $code);
+        $code=trim($code);
+        return $code;
+    }
+    function getUUID($options) {
+        $buffer='';
+        if(is_string($options)) {
+            $buffer=$options;
+        } elseif(is_array($options)) {
+            foreach($options as $k=>$v) {
+                $buffer.=', '.$k.'='.$v;
+            }
+        }
+        if($buffer!='') {
+            $buffer='u'.md5($buffer);
+        }
+        return $buffer;
     }
 }

@@ -6,12 +6,12 @@ Description: Finally the plugin to insert INLINE related posts :)
 Author: IntellyWP
 Author URI: http://intellywp.com/
 Email: aleste@intellywp.com
-Version: 1.3.4
+Version: 2.0.2
 */
 define('IRP_PLUGIN_PREFIX', 'IRP_');
 define('IRP_PLUGIN_FILE',__FILE__);
 define('IRP_PLUGIN_NAME', 'intelly-related-posts');
-define('IRP_PLUGIN_VERSION', '1.3.4');
+define('IRP_PLUGIN_VERSION', '2.0.2');
 define('IRP_PLUGIN_AUTHOR', 'IntellyWP');
 define('IRP_PLUGIN_ROOT', dirname(__FILE__).'/');
 define('IRP_PLUGIN_IMAGES', plugins_url( 'assets/images/', __FILE__ ));
@@ -42,6 +42,8 @@ define('IRP_TAB_ABOUT', 'about');
 define('IRP_TAB_ABOUT_URI', IRP_PAGE_SETTINGS.'&tab='.IRP_TAB_ABOUT);
 define('IRP_TAB_FAQ', 'faq');
 define('IRP_TAB_FAQ_URI', IRP_PAGE_SETTINGS.'&tab='.IRP_TAB_FAQ);
+define('IRP_TAB_WHATS_NEW', 'whatsnew');
+define('IRP_TAB_WHATS_NEW_URI', IRP_PAGE_SETTINGS.'&tab='.IRP_TAB_WHATS_NEW);
 
 include_once(dirname(__FILE__).'/autoload.php');
 irp_include_php(dirname(__FILE__).'/includes/');
@@ -56,10 +58,12 @@ class IRP_Singleton {
     var $Check;
     var $Options;
     var $Manager;
-    var $Logger;
+    var $Log;
     var $Cron;
     var $Tracking;
     var $Tabs;
+    var $Plugin;
+    var $HtmlTemplate;
 
     function __construct() {
         $this->Lang=new IRP_Language();
@@ -68,12 +72,16 @@ class IRP_Singleton {
         $this->Utils=new IRP_Utils();
         $this->Form=new IRP_Form();
         $this->Check=new IRP_Check();
-        $this->Options=new IRP_Options();
+        $this->Options=new IRP_AppOptions();
         $this->Manager=new IRP_Manager();
-        $this->Logger=new IRP_Logger();
+        $this->Log=new IRP_Logger();
         $this->Cron=new IRP_Cron();
         $this->Tracking=new IRP_Tracking();
         $this->Tabs=new IRP_Tabs();
+        $this->Plugin=new IRP_Plugin();
+
+        $this->HtmlTemplate=new IRP_HtmlTemplate();
+        $this->HtmlTemplate->load(IRP_PLUGIN_ROOT.'assets/templates/styles.html');
     }
 }
 //from Settings_API_Tabs_Demo_Plugin
@@ -106,8 +114,9 @@ class IRP_Tabs {
         global $irp;
         if($file==IRP_PLUGIN_NAME.'/index.php'){
             $settings = "<a href='".IRP_PAGE_SETTINGS."'>" . $irp->Lang->L('Settings') . '</a> ';
-            $premium = "<a href='".IRP_PAGE_PREMIUM."'>" . $irp->Lang->L('PREMIUM') . '</a> ';
-            $links = array_merge(array($settings), $links);
+            $url=IRP_INTELLYWP_SITE.IRP_PLUGIN_NAME.'?utm_source=free-users&utm_medium=irp-plugins&utm_campaign=IRP';
+            $premium = "<a href='".$url."' target='_blank'>" . $irp->Lang->L('PREMIUM') . '</a> ';
+            $links = array_merge(array($settings, $premium), $links);
         }
         return $links;
     }
@@ -124,7 +133,7 @@ class IRP_Tabs {
         wp_enqueue_script('irp-select2-js', plugins_url('assets/deps/select2-3.5.2/select2.min.js', __FILE__ ).$v);
         wp_enqueue_script('irp-starrr-js', plugins_url('assets/deps/starrr/starrr.js', __FILE__ ).$v);
 
-        wp_enqueue_script('jquery-qtip', plugins_url('assets/deps/qtip/jquery.qtip.min.js', __FILE__ ), array( 'jquery' ).$v, '1.0.0-RC3', true );
+        wp_enqueue_script('jquery-qtip', plugins_url('assets/deps/qtip/jquery.qtip.min.js', __FILE__ ).$v, array( 'jquery' ), '1.0.0-RC3', true );
 
         wp_register_script('irp-common', plugins_url('assets/js/common.js', __FILE__ ).$v, array('jquery', 'jquery-ui-autocomplete'), '1.0', FALSE);
         wp_enqueue_script('irp-common');
@@ -133,16 +142,28 @@ class IRP_Tabs {
     function showTabPage() {
         global $irp;
 
-        $id=intval($irp->Utils->qs('id', 0));
-        $tab=$irp->Utils->qs('tab', IRP_TAB_SETTINGS);
+        if($irp->Plugin->isActive(IRP_PLUGINS_INTELLY_RELATED_POSTS_PRO)) {
+            $irp->Options->pushWarningMessage('YouHaveThePremiumVersion', IRPP_TAB_SETTINGS_URI);
+            $irp->Options->writeMessages();
+            return;
+        }
 
-        $this->tabs[IRP_TAB_SETTINGS]=$irp->Lang->L('Settings');
-        $this->tabs[IRP_TAB_FAQ]=$irp->Lang->L('FAQ');
-        $this->tabs[IRP_TAB_ABOUT]=$irp->Lang->L('About');
+        $defaultTab=IRP_TAB_SETTINGS;
+        if($irp->Options->isShowWhatsNew()) {
+            $tab=IRP_TAB_WHATS_NEW;
+            $defaultTab=$tab;
+            $this->tabs[IRP_TAB_WHATS_NEW]=$irp->Lang->L('What\'s New');
+        } else {
+            $tab = $irp->Utils->qs('tab', $defaultTab);
+            $this->tabs[IRP_TAB_SETTINGS] = $irp->Lang->L('Settings');
+            $this->tabs[IRP_TAB_FAQ] = $irp->Lang->L('FAQ');
+            $this->tabs[IRP_TAB_ABOUT] = $irp->Lang->L('About');
+        }
+
         ?>
         <div class="wrap" style="margin:5px;">
             <?php
-            $this->showTabs();
+            $this->showTabs($defaultTab);
             $header='';
             switch ($tab) {
                 case IRP_TAB_SETTINGS:
@@ -154,15 +175,22 @@ class IRP_Tabs {
                 case IRP_TAB_ABOUT:
                     $header='About';
                     break;
+                case IRP_TAB_WHATS_NEW:
+                    $header='';
+                    break;
             }
 
             if($irp->Lang->H($header.'Title')) { ?>
-                <h2><?php $irp->Lang->P($header . 'Title') ?></h2>
+                <h2><?php $irp->Lang->P($header . 'Title', IRP_PLUGIN_VERSION) ?></h2>
                 <?php if ($irp->Lang->H($header . 'Subtitle')) { ?>
                     <div><?php $irp->Lang->P($header . 'Subtitle') ?></div>
                 <?php } ?>
                 <div style="clear:both;"></div>
             <?php }
+
+            if($tab!=IRP_TAB_WHATS_NEW) {
+                irp_ui_first_time();
+            }
 
             switch ($tab) {
                 case IRP_TAB_SETTINGS:
@@ -175,13 +203,21 @@ class IRP_Tabs {
                     irp_ui_about();
                     irp_ui_feedback();
                     break;
-            } ?>
+                case IRP_TAB_WHATS_NEW:
+                    irp_ui_whats_new();
+                    break;
+            }
+
+            if($irp->Options->isShowWhatsNew()) {
+                $irp->Options->setShowWhatsNew(FALSE);
+            }
+            ?>
         </div>
     <?php }
 
-    function showTabs() {
+    function showTabs($defaultTab) {
         global $irp;
-        $tab=$irp->Check->of('tab', IRP_TAB_SETTINGS);
+        $tab=$irp->Check->of('tab', $defaultTab);
 
         ?>
         <h2 class="nav-tab-wrapper" style="float:left; width:97%;">

@@ -78,10 +78,10 @@ class IRP_Manager {
         $options[$optionKey]=$optionArray;
 
         $q=new WP_Query();
-        $irp->Logger->debug('RELATED POSTS QUERY=%s', $options);
+        $irp->Log->debug('RELATED POSTS QUERY=%s', $options);
         $posts=$q->query($options);
 
-        $irp->Logger->debug('RELATED POSTS RESULT COUNT=%s', count($posts));
+        $irp->Log->debug('RELATED POSTS RESULT COUNT=%s', count($posts));
         foreach($posts as $p) {
             if($args['postId']<=0 || $args['postId']!=$p->ID) {
                 $ids[]=$p->ID;

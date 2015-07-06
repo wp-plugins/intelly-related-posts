@@ -106,15 +106,10 @@ class IRP_Tracking {
             , 'rewriteThresold'=>$irp->Options->getRewriteThreshold()
             , 'rewriteBoxesCount'=>$irp->Options->getRewriteBoxesCount()
             , 'rewriteActive'=>$irp->Options->isRewriteActive()
-            , 'linkRel'=>$irp->Options->getLinkRel()
-            , 'showPoweredBy'=>$irp->Options->isShowPoweredBy()
-            , 'templateShadow'=>$irp->Options->isTemplateShadow()
-            , 'templateBorderColor'=>$irp->Options->getTemplateBorderColor()
-            , 'templateBackgroundColor'=>$irp->Options->getTemplateBackgroundColor()
-            , 'templateRelatedTextColor'=>$irp->Options->getTemplateRelatedTextColor()
             , 'metaboxPostTypes'=>$irp->Options->getMetaboxPostTypes()
             , 'rewritePostTypes'=>$irp->Options->getRewritePostTypes()
         );
+        $data=$irp->Utils->parseArgs($irp->Options->getTemplateStyle(), $data);
         $result['iwpm_plugin_name']=IRP_PLUGIN_NAME;
         $result['iwpm_plugin_version']=IRP_PLUGIN_VERSION;
         $result['iwpm_plugin_data']=$data;

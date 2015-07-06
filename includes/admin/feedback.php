@@ -20,6 +20,7 @@ function irp_ui_feedback() {
                 $id=$irp->Tracking->sendTracking(TRUE);
             }
             $irp->Check->data['tracking_id']=$id;
+            $irp->Check->data['plugin']=IRP_PLUGIN_NAME;
             $data=$irp->Utils->remotePost('feedback', $irp->Check->data);
             if($data) {
                 $irp->Options->pushSuccessMessage('FeedbackSuccess');

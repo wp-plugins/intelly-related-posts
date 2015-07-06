@@ -1,7 +1,7 @@
 (function() {
     tinymce.PluginManager.add('irp_mce_button', function(editor, url) {
         editor.addButton('irp_mce_button', {
-            title: 'Inline Related Posts'
+            title: 'Inline Related Posts PRO'
             , type: 'menubutton'
             , icon: 'icon irp-own-icon'
             , menu: [

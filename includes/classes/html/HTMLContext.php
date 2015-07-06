@@ -78,13 +78,13 @@ class IRP_HTMLContext {
         $diff=($this->currentWords-$this->lastBoxWords);
         $postLimit=$this->wordsThreshold*($irp->Options->getRewriteBoxesWritten()+1);
         $minLimit=$irp->Options->getRewriteThreshold();
-        $irp->Logger->debug('CHECKING EXCEED WORDS..');
-        $irp->Logger->debug('WC=%s, LWC=%s, WT=%s/%s, RBW=%s'
+        $irp->Log->debug('CHECKING EXCEED WORDS..');
+        $irp->Log->debug('WC=%s, LWC=%s, WT=%s/%s, RBW=%s'
             , $this->currentWords, $this->lastBoxWords
             , $this->wordsThreshold, $minLimit
             , $irp->Options->getRewriteBoxesWritten());
         $result=($this->currentWords>=$postLimit && $diff>=$minLimit);
-        $irp->Logger->debug('(%s>=%s) AND (%s>=%s)=%s'
+        $irp->Log->debug('(%s>=%s) AND (%s>=%s)=%s'
             , $this->currentWords, $postLimit
             , $diff, $minLimit, $result);
         return $result;
@@ -106,7 +106,7 @@ class IRP_HTMLContext {
             if($p===FALSE) {
                 $p=strpos($fullTag, '>');
                 if($p===FALSE) {
-                    $irp->Logger->error('UNABLE TO DECODE TAG %s', $fullTag);
+                    $irp->Log->error('UNABLE TO DECODE TAG %s', $fullTag);
                     return '';
                 }
             }
@@ -144,7 +144,7 @@ class IRP_HTMLContext {
         } elseif(in_array($tag, array('div','p'))) {
             $result=new IRP_BehaviourTag();
             $result->allowBoxBefore=TRUE;
-        } elseif(in_array($tag, array('blockquote', 'irp', 'cite', 'code', 'em'))) {
+        } elseif(in_array($tag, array('blockquote', 'irp', 'cite', 'code', 'em', 'pre'))) {
             $result=new IRP_BehaviourTag();
             $result->ensureWithoutPreviousBox=TRUE;
             $result->ensureUncuttable=TRUE;
@@ -227,12 +227,12 @@ class IRP_HTMLContext {
                         $compare=$tagsStack->pop();
                         while(!$tagsStack->isEmpty() && $compare!=$tag) {
                             //security check: close each tag until i found my tag
-                            $irp->Logger->error('WHAT? UNABLE TO FIND OPENED TAG..TRY CLOSING AND RETRYING AGAIN');
+                            $irp->Log->error('WHAT? UNABLE TO FIND OPENED TAG..TRY CLOSING AND RETRYING AGAIN');
                             $compare->closeTag='</'.$compare->tag.'>';
                             $compare=$tagsStack->pop();
                         }
                         if($compare!=$tag) {
-                            $irp->Logger->error('WHAT? UNABLE TO FIND OPENED TAG');
+                            $irp->Log->error('WHAT? UNABLE TO FIND OPENED TAG');
                             $errors=TRUE;
                         } else {
                             $compare->closeTag=$text;
@@ -245,7 +245,7 @@ class IRP_HTMLContext {
             }
             while($previous<strlen($all));
         } catch(Exception $ex) {
-            $irp->Logger->exception($ex);
+            $irp->Log->exception($ex);
         }
         
         return !$errors;
@@ -276,7 +276,7 @@ class IRP_HTMLContext {
 
         $tos=$tagsStack->peek();
         if(!$tos || !isset($tos->tag) || strcasecmp($tos->tag, $compare)!=0) {
-            $irp->Logger->error('CHECK YOU BODY TAG %s ENDS WITH %s TAG', $tos->tag, $compare);
+            $irp->Log->error('CHECK YOU BODY TAG %s ENDS WITH %s TAG', $tos->tag, $compare);
             return NULL;
         }
 
@@ -352,29 +352,32 @@ class IRP_HTMLContext {
         $written=$irp->Options->getRewriteBoxesWritten();
         $max=$irp->Options->getRewriteBoxesCount();
         if(!$forceBox && $written>=$max) {
-            $irp->Logger->error('MAX BOX=%s REACHED', $max);
+            $irp->Log->error('MAX BOX=%s REACHED', $max);
             return FALSE;
         }
 
-        $irp->Logger->debug('WRITING BOX=%s/%s', $written, $max);
+        $irp->Log->debug('WRITING BOX=%s/%s', $written, $max);
         $result=FALSE;
         $count=1;//$irp->Options->getRewritePostsInBoxCount();
         $ids=$irp->Options->getToShowPostsIds($count, TRUE);
 
-        $comment="<!-- INLINE RELATED POSTS {WC=%s, LWC=%s, WT=%s, RT=%s, CNT=%s/%s} //-->";
+        $comment="INLINE RELATED POSTS {WC=%s, LWC=%s, WT=%s, RT=%s, CNT=%s/%s}";
         $comment=sprintf($comment
             , $this->currentWords, $this->lastBoxWords
             , $this->wordsThreshold, $irp->Options->getRewriteThreshold()
             , $written, $max
         );
-        $options=array('comment'=>$comment);
+        $options=array(
+            'comment'=>$comment
+            , 'shortcode'=>TRUE
+        );
         $box=irp_ui_get_box($ids, $options);
         if($box!='') {
             $this->pushRelatedBox($box);
             $result=TRUE;
         } else {
             $result=FALSE;
-            $irp->Logger->error('NO BOX TO WRITE WITH IDS=%s', $ids);
+            $irp->Log->error('NO BOX TO WRITE WITH IDS=%s', $ids);
         }
         return $result;
     }
@@ -458,7 +461,7 @@ class IRP_HTMLContext {
         */
 
         $this->currentWords+=$w;
-        $irp->Logger->debug('INCREMENT WORDS %s/%s', $w, $this->currentWords);
+        $irp->Log->debug('INCREMENT WORDS %s/%s', $w, $this->currentWords);
     }
 }
 

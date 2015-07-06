@@ -16,8 +16,8 @@ class IRP_Logger {
     var $time;
     var $profile;
 
-    public function __construct($name='IRP') {
-        if($name=='') $name='IRP';
+    public function __construct($name='IRPP') {
+        if($name=='') $name='IRPP';
         $this->name=$name;
         $this->time=-1;
         $this->allTime=-1;

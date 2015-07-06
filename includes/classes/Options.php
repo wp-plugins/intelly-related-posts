@@ -15,15 +15,15 @@ class IRP_Options {
     }
 
     //always add a prefix to avoid conflicts with other plugins
-    private function getKey($key) {
+    protected function getKey($key) {
         return 'IRP_'.$key;
     }
     //option
-    private function removeOption($key) {
+    protected function removeOption($key) {
         $key=$this->getKey($key);
         delete_option($key);
     }
-    private function getOption($key, $default=FALSE) {
+    protected function getOption($key, $default=FALSE) {
         $key=$this->getKey($key);
         $result=get_option($key, $default);
         if(is_string($result)) {
@@ -31,7 +31,7 @@ class IRP_Options {
         }
         return $result;
     }
-    private function setOption($key, $value) {
+    protected function setOption($key, $value) {
         $key=$this->getKey($key);
         if(is_bool($value)) {
             $value=($value ? 1 : 0);
@@ -40,7 +40,7 @@ class IRP_Options {
     }
 
     //$_SESSION
-    private function removeSession($key) {
+    protected function removeSession($key) {
         global $wp_session;
 
         $key=$this->getKey($key);
@@ -48,7 +48,7 @@ class IRP_Options {
             unset($wp_session[$key]);
         }
     }
-    private function getSession($key, $default=FALSE) {
+    protected function getSession($key, $default=FALSE) {
         global $wp_session;
 
         $key=$this->getKey($key);
@@ -61,7 +61,7 @@ class IRP_Options {
         }
         return $result;
     }
-    private function setSession($key, $value) {
+    protected function setSession($key, $value) {
         global $wp_session;
 
         $key=$this->getKey($key);
@@ -70,13 +70,13 @@ class IRP_Options {
 
     //$_REQUEST
     //However WP enforces its own logic - during load process wp_magic_quotes() processes variables to emulate magic quotes setting and enforces $_REQUEST to contain combination of $_GET and $_POST, no matter what PHP configuration says.
-    private function removeRequest($key) {
+    protected function removeRequest($key) {
         $key=$this->getKey($key);
         if(isset($this->vars[$key])) {
             unset($this->vars[$key]);
         }
     }
-    private function getRequest($key, $default=FALSE) {
+    protected function getRequest($key, $default=FALSE) {
         $key=$this->getKey($key);
         $result=$default;
         if(isset($this->vars[$key])) {
@@ -84,9 +84,17 @@ class IRP_Options {
         }
         return $result;
     }
-    private function setRequest($key, $value) {
+    protected function setRequest($key, $value) {
         $key=$this->getKey($key);
         $this->vars[$key]=$value;
+    }
+
+    //ShowWhatsNew
+    public function isShowWhatsNew() {
+        return $this->getOption('ShowWhatsNew', FALSE);
+    }
+    public function setShowWhatsNew($value) {
+        $this->setOption('ShowWhatsNew', $value);
     }
 
     //TrackingEnable
@@ -104,251 +112,12 @@ class IRP_Options {
         $this->setOption('TrackingNotice', $value);
     }
 
-    public function hasRelatedPostsIds() {
-        $array=$this->getRequest('RelatedPostsIds', array());
-        return (is_array($array) && count($array)>0);
-    }
-    public function initRelatedPostsIds($ids) {
-        $this->setRequest('RelatedPostsIds', $ids);
-        if($ids) {
-            shuffle($ids);
-        }
-        $this->setRequest('ToShowPostsIds', $ids);
-        $this->setRequest('ShownPostsIdsSequence', array());
-    }
-    //if you pass maxIds as a number this function take next [maxIds] posts to show as related
-    //if you pass maxIds as an array of postsIds will return this array as posts to show as related
-    public function getToShowPostsIds($maxIds, $repeat=FALSE) {
-        $result=array();
-        if(!$this->hasRelatedPostsIds()) {
-            return $result;
-        }
-
-        $toShow=$this->getRequest('ToShowPostsIds', array());
-        if(is_numeric($maxIds)) {
-            if(!is_array($toShow) || (count($toShow)==0 && !$repeat)) {
-                return $result;
-            }
-            while($maxIds>0) {
-                if(count($toShow)==0) {
-                    if($repeat) {
-                        //i can use again the posts shown
-                        $toShow=$this->getRequest('RelatedPostsIds');
-                        shuffle($toShow);
-                    } else {
-                        break;
-                    }
-                }
-
-                $postId=array_pop($toShow);
-                $result[]=$postId;
-                --$maxIds;
-            }
-        } elseif(is_array($maxIds)) {
-            $toShow=array_diff($toShow, $maxIds);
-            $result=$maxIds;
-        }
-        $this->setRequest('ToShowPostsIds', $toShow);
-
-        //update the sequence shown
-        $array=$this->getRequest('ShownPostsIdsSequence', array());
-        $array[]=$result;
-        $this->setRequest('ShownPostsIdsSequence', $array);
-
-        return $result;
-    }
-    public function getShownPostsIdsSequence() {
-        return $this->getRequest('ShownPostsIdsSequence', array());
-    }
-
-    public function getPostShown() {
-        return $this->getRequest('PostShown', NULL);
-    }
-    public function setPostShown($value) {
-        $this->setRequest('PostShown', $value);
-    }
-    public function isPostShownExcluded() {
-        global $irp;
-        $array=$this->getExcludedPostsIds();
-        $post=$this->getPostShown();
-
-        $result=FALSE;
-        if(!$post || !isset($post->ID)) {
-            $result=TRUE;
-        } elseif(in_array($post->ID, $array)) {
-            $irp->Logger->info('POST ID=%s IN RELATED POSTS EXCLUDE LIST', $post->ID);
-            $result=TRUE;
-        } else {
-            $result=FALSE;
-        }
-        return $result;
-    }
-    public function isShortcodeUsed() {
-        return $this->getRequest('ShortcodeUsed', 0);
-    }
-    public function setShortcodeUsed($value) {
-        $this->setRequest('ShortcodeUsed', $value);
-    }
-
-    //is related posts active?
     public function isActive() {
         return $this->getOption('Active', 0);
     }
     public function setActive($value) {
         $this->setOption('Active', $value);
     }
-    public function isShowPoweredBy() {
-        return $this->getOption('ShowPoweredBy', TRUE);
-    }
-    public function setShowPoweredBy($value) {
-        $this->setOption('ShowPoweredby', $value);
-    }
-    public function getLinkRel() {
-        return $this->getOption('LinkRel', 'nofollow');
-    }
-    public function setLinkRel($value) {
-        $this->setOption('LinkRel', $value);
-    }
-    //is related posts active in posts without any [irl] shortcodes defined
-    public function isRewriteActive() {
-        return $this->getOption('RewriteActive', 1);
-    }
-    public function setRewriteActive($value) {
-        $this->setOption('RewriteActive', $value);
-    }
-    public function getExcludedPostsIds() {
-        return $this->getOption('ExcludedPostsIds', array());
-    }
-    public function setExcludedPostsIds($value) {
-        $value=array_unique($value);
-        $this->setOption('ExcludedPostsIds', $value);
-    }
-    public function getMetaboxPostTypes($create=TRUE) {
-        global $irp;
-        $result=$this->getOption('MetaboxPostTypes', array());
-        if($create) {
-            $types=$irp->Utils->query(IRP_QUERY_POST_TYPES);
-            foreach($types as $v) {
-                $v=$v['id'];
-                if(!isset($result[$v]))  {
-                    $result[$v]=($v=='post' ? 1 : 0);
-                }
-            }
-        }
-        return $result;
-    }
-    public function setMetaboxPostTypes($values) {
-        $this->setOption('MetaboxPostTypes', $values);
-    }
-    //is integrated with which post types?
-    public function getRewritePostTypes($create=TRUE) {
-        global $irp;
-        $result=$this->getOption('RewritePostTypes', array());
-        if($create) {
-            $types=$irp->Utils->query(IRP_QUERY_POST_TYPES);
-            foreach($types as $v) {
-                $v=$v['id'];
-                if(!isset($result[$v]))  {
-                    $result[$v]=($v=='post' ? 1 : 0);
-                }
-            }
-        }
-        return $result;
-    }
-    public function setRewritePostTypes($values) {
-        $this->setOption('RewritePostTypes', $values);
-    }
-    //how many related posts boxes we have to include?
-    public function getRewriteBoxesCount() {
-        return $this->getOption('RewriteBoxesCount', 3);
-    }
-    public function setRewriteBoxesCount($value) {
-        $this->setOption('RewriteBoxesCount', $value);
-    }
-    //how many related posts we see in each box?
-    public function getRewritePostsInBoxCount() {
-        //return $this->getOption('RewritePostsInBoxCount', 1);
-        return 1;
-    }
-    public function setRewritePostsInBoxCount($value) {
-        $this->setOption('RewritePostsInBoxCount', $value);
-    }
-    //how many words we have to "wait" before inserting a related box
-    public function getRewriteThreshold() {
-        return $this->getOption('RewriteThreshold', 250);
-    }
-    public function setRewriteThreshold($value) {
-        $this->setOption('RewriteThreshold', $value);
-    }
-    //include also a related box in the end?
-    public function isRewriteAtEnd() {
-        return $this->getOption('RewriteAtEnd', TRUE);
-    }
-    public function setRewriteAtEnd($value) {
-        $this->setOption('RewriteAtEnd', $value);
-    }
-    //how many boxes are already been written?
-    public function getRewriteBoxesWritten() {
-        return $this->getRequest('RewriteBoxesWritten', 0);
-    }
-    public function setRewriteBoxesWritten($value) {
-        $this->setRequest('RewriteBoxesWritten', $value);
-    }
-
-    /*
-    public function isEngineWithAuthors() {
-        return $this->getOption('EngineWithAuthors', 1);
-    }
-    public function setEngineWithAuthors($value) {
-        $this->setOption('EngineWithAuthors', $value);
-    }
-    public function isEngineWithTags() {
-        return $this->getOption('EngineWithTags', 1);
-    }
-    public function setEngineWithTags($value) {
-        $this->setOption('EngineWithTags', $value);
-    }
-    public function isEngineWithCategories() {
-        return $this->getOption('EngineWithCategories', 1);
-    }
-    public function setEngineWithCategories($value) {
-        $this->setOption('EngineWithCategories', $value);
-    }
-    */
-    public function getEngineSearch() {
-        return $this->getOption('EngineSearch', IRP_ENGINE_SEARCH_CATEGORIES_TAGS);
-    }
-    public function setEngineSearch($value) {
-        $this->setOption('EngineSearch', $value);
-    }
-
-    public function getRelatedText() {
-        return $this->getOption('RelatedText', 'Related:');
-    }
-    public function setRelatedText($value) {
-        $this->setOption('RelatedText', $value);
-    }
-
-    /*
-    public function getBackgroundColor() {
-        return $this->getOption('BackgroundColor', '');
-    }
-    public function setBackgroundColor($value) {
-        $this->setOption('BackgroundColor', $value);
-    }
-    public function getBorderColor() {
-        return $this->getOption('BorderColor', '');
-    }
-    public function setBorderColor($value) {
-        $this->setOption('BorderColor', $value);
-    }
-    public function getTemplateBackground() {
-        return $this->getOption('TemplateBackground', '');
-    }
-    public function setTemplateBackground($value) {
-        $this->setOption('TemplateBackground', $value);
-    }
-    */
 
     public function getTrackingLastSend() {
         return $this->getOption('TrackingLastSend['.IRP_PLUGIN_NAME.']', 0);
@@ -367,74 +136,6 @@ class IRP_Options {
     }
     public function setPluginUpdateDate($value) {
         $this->setOption('PluginUpdateDate['.IRP_PLUGIN_NAME.']', $value);
-    }
-
-    //template style
-    public function getTemplateRelatedTextColor() {
-        $result=$this->getOption('TemplateRelatedTextColor', '');
-        return $result;
-    }
-    public function setTemplateRelatedTextColor($name) {
-        return $this->setOption('TemplateRelatedTextColor', $name);
-    }
-    public function getTemplateBackgroundColor() {
-        $result=$this->getOption('TemplateBackgroundColor', '');
-        return $result;
-    }
-    public function setTemplateBackgroundColor($name) {
-        return $this->setOption('TemplateBackgroundColor', $name);
-    }
-    public function getTemplateBorderColor() {
-        $result=$this->getOption('TemplateBorderColor', '');
-        return $result;
-    }
-    public function setTemplateBorderColor($name) {
-        return $this->setOption('TemplateBorderColor', $name);
-    }
-    public function isTemplateShadow() {
-        return $this->getOption('TemplateShadow', 1);
-    }
-    public function setTemplateShadow($name) {
-        return $this->setOption('TemplateShadow', $name);
-    }
-
-    public function getStyleRelatedTextColors() {
-        $array=$this->getOption('StyleRelatedTextColors', array());
-        ksort($array);
-        return $array;
-    }
-    public function setStyleRelatedTextColors($value) {
-        $this->setOption('StyleRelatedTextColors', $value);
-    }
-    public function getStyleBackgroundColors() {
-        $array=$this->getOption('StyleBackgroundColors', array());
-        ksort($array);
-        return $array;
-    }
-    public function setStyleBackgroundColors($value) {
-        $this->setOption('StyleBackgroundColors', $value);
-    }
-    public function getStyleLightBorderColors() {
-        $array=$this->getOption('StyleLightBorderColors', array());
-        ksort($array);
-        return $array;
-    }
-    public function setStyleLightBorderColors($value) {
-        $this->setOption('StyleLightBorderColors', $value);
-    }
-    public function getStyleDarkBorderColors() {
-        $array=$this->getOption('StyleDarkBorderColors', array());
-        ksort($array);
-        return $array;
-    }
-    public function setStyleDarkBorderColors($value) {
-        $this->setOption('StyleDarkBorderColors', $value);
-    }
-    public function getStyleShadow() {
-        return $this->getOption('StyleShadow', '');
-    }
-    public function setStyleShadow($value) {
-        $this->setOption('StyleShadow', $value);
     }
 
     public function isPluginFirstInstall() {
@@ -458,19 +159,6 @@ class IRP_Options {
         $this->setOption('LoggerEnable', $value);
     }
 
-    public function getMaxExecutionTime(){
-        return $this->getOption('MaxExecutionTime', -1);
-    }
-    public function resetMaxExecutionTime(){
-        $this->setOption('MaxExecutionTime', -1);
-    }
-    public function updateMaxExecutionTime($value){
-        $now=$this->getMaxExecutionTime();
-        if($value>$now) {
-            $this->setOption('MaxExecutionTime', $value);
-        }
-    }
-
     //Cache
     public function getCache($name, $id) {
         return $this->getRequest('Cache_'.$name.'_'.$id);
@@ -484,21 +172,6 @@ class IRP_Options {
     }
     public function setFeedbackEmail($value) {
         $this->setOption('FeedbackEmail', $value);
-    }
-
-    public function useCssTemplate($name) {
-        $array=$this->getUsedCssTemplates();
-        if(isset($array[$name])) {
-            $class=$array[$name];
-        } else {
-            $class='b'.md5($name.'-'.time());
-            $array[$name]=$class;
-            $this->setRequest('UsedCssTemplates', $array);
-        }
-        return $class;
-    }
-    public function getUsedCssTemplates() {
-        return $this->getRequest('UsedCssTemplates', array());
     }
 
     private function hasGenericMessages($type) {

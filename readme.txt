@@ -27,13 +27,15 @@ How many things have you have in the footer post?
 
 Do you know that asking too many things is equal to ask nothing?
 
+[youtube https://www.youtube.com/watch?v=CjdTr14Nd1g]
+
 Inline related posts plugin bring a new experience to your visitors and help you to win the fight of catching readers attention ;)
 
 > With Inline Related Posts Plugin you can:<br>
 > 1. Put related posts boxes INSIDE your content (<a href="https://wordpress.org/plugins/intelly-related-posts/screenshots/">see Screenshots</a>)<br>
 > 2. Automatically put multiple boxes in all your posts<br>
 > 3. Automatically detect line breaks (without destroy your paragraphs or headlines)<br>
-> 4. Choose over 20 unique styles
+> 4. Choose over 20+ combinations of style (themes, colors, hover)
 
 
 <a href="https://downloads.wordpress.org/plugin/intelly-related-posts.zip">Download now the Inline Related posts plugin into your Wordpress.</a>
@@ -75,12 +77,28 @@ Absolutely Not! Inline Related Posts is built with lightweight code so you wonâ€
 1. Some example of famous websites with "Related post box"
 2. An example of a style that you can use
 3. Another example of a style that you can use
-4. Just another example of a style that you can use
-5. Our simple plugin configuration.
-6. An example of our plugin in action, related posts box are placed AUTOMATICALLY 
-7. Or you can choose a custom article using shortcode
+4. Another example of a style that you can use
+5. Hover effect is allowed using this theme
+6. Our Intelly Line Breaks technology which detects grammar rules and avoids content breaks.
+7. The backend of our plugin. Live preview available and super fast options to fit your theme style.
+8. A Box Theme of Inline Related Posts PRO. Check other PREMIUM feature <a href="https://intellywp.com/intelly-related-posts/">here</a>. (https://intellywp.com/intelly-related-posts/)
+9. Another Box Theme of Inline Related Posts PRO. Check other PREMIUM feature <a href="https://intellywp.com/intelly-related-posts/">here</a>. (https://intellywp.com/intelly-related-posts/)
 
 == Changelog ==
+
+= 2.0.2 =
+*Release Date - 06/07/2015*
+
+* Minor bugfix
+
+= 2.0.1 =
+*Release Date - 05/07/2015*
+
+* [Bugfix] Fixed bug with PRE tag
+* [Bugfix] Fixed notice Array to string conversion in ../intelly-related-posts/index.php on line 127
+* [NEW] Created themes for the plugin
+* [NEW] Created 2 different themes for free with various effect
+* [NEW] Created 3 different themes in PRO version with various effect
 
 = 1.3.4 =
 *Release Date - 06/06/2015*
