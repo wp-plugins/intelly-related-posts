@@ -66,7 +66,7 @@ NOPE. Our algorithm knows HTML tags and avoid placing the boxes in the wrong pla
 
 = Do you have some others fancy box styles? =
 
-Coming Soon!! As we’re working hard to publish new styles, you can suggest us one of your favourites an by email! <a href="http://intellywp.com/contact" target="_blank">email</a>!
+Yes! We have other cool styles and features in the PRO version. Check it out <a href="https://intellywp.com/intelly-related-posts/">https://intellywp.com/intelly-related-posts/</a>
 
 = Will this plugin slow my website? =
 
