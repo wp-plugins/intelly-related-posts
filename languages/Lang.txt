@@ -17,7 +17,7 @@ AboutNotice=Thank you for trying our amazing plugin. Now you are able to quickly
 AboutTitle=We make Intelly plugins for your Intelly site
 ManagerTitle=Tracking Code Manager FREE
 ManagerSubtitle=<b>WARNING</b> This does not filter your HTML code for errors or for malicious scripts. Use it at your own risk.
-SettingsTitle=Inline Related Posts PRO (v.{0})
+SettingsTitle=Inline Related Posts (v.{0})
 FaqTitle=F.A.Q. Frequently Asked Question
 FeedbackHeader=Are you looking for new features? Send us a feedback
 AboutText1=We are Stefan and Alex, two guys in love with Wordpress, coding and marketing! Our company IntellyWP is an idea to bring Intelly ideas to your Intelly site ;)
@@ -86,7 +86,7 @@ EngineSection=Engine Settings
 EngineSectionSubtitle=Choose how the plugin discovers similar posts
 PreviewSection=Real time preview
 PreviewSectionSubtitle=Change any above settings to refresh preview OR <a href="javascript:IRP_changeRelatedBox()">REFRESH HERE</a>
-PreviewSectionMaxTime=With these settings the plugin has ran in max {0} milliseconds
+PreviewSectionMaxTime=With these settings the Inline Related Posts has ran in max {0} milliseconds with {1} different posts. Enjoy! :)
 Settings.irpActive=Active?
 Settings.irpText=Related text
 Settings.irpBackgroundColor=Background Color

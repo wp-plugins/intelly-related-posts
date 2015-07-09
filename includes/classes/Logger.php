@@ -92,7 +92,9 @@ class IRP_Logger {
         $text=sprintf($message
             , $this->dump($v1), $this->dump($v2), $this->dump($v3)
             , $this->dump($v4), $this->dump($v5), $this->dump($v6));
-        $message=date("d/m/Y H:i:s")." ".$verbosity." ";
+        $m=microtime(TRUE)%1000;
+        $m=":".str_pad(''.$m, 3, "0", STR_PAD_LEFT);
+        $message=date("d/m/Y H:i:s").$m." ".$verbosity." ";
         if(count($this->context)>0) {
             $message.='{'.$this->context[count($this->context)-1].'} ';
         }

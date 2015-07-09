@@ -228,6 +228,12 @@ function irp_ui_settings() {
         $irp->Options->setMetaboxPostTypes($options);
     }
 
+    $c=wp_count_posts()->publish;
+    $t=$irp->Options->getMaxExecutionTime();
+    if($t>0) {?>
+        <p style="width:auto; font-style: italic;"><?php $irp->Lang->P('PreviewSectionMaxTime', $t, $c)?></p>    
+    <?php }
+
     $irp->Form->p('GeneralSection');
     $args=array(
         'class'=>'irp-hideShow irp-checkbox'

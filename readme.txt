@@ -86,6 +86,13 @@ Absolutely Not! Inline Related Posts is built with lightweight code so you wonâ€
 
 == Changelog ==
 
+= 2.0.3 =
+*Release Date - 09/07/2015*
+
+* [Bugfix] Speed optimization
+* [Bugfix] Corrected the function to filter only recent posts
+* Minor bugfix
+
 = 2.0.2 =
 *Release Date - 06/07/2015*
 

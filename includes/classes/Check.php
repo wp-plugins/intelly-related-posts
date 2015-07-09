@@ -32,7 +32,7 @@ class IRP_Check {
         }
         return $result;
     }
-    public function nonce($action, $nonce='_wpnonce') {
+    public function nonce($action='a_nonce', $nonce='_wpnonce') {
         if(isset($_REQUEST[$nonce])) {
             $nonce=$_REQUEST[$nonce];
         }

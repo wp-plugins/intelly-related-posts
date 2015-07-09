@@ -12,9 +12,11 @@ function irp_head(){
     if($post && isset($post->ID) && is_single($post->ID)) {
         $irp->Options->setPostShown($post);
         $args=array('postId'=>$post->ID, 'shuffle'=>TRUE, 'count'=>-1);
+        //$irp->Log->debug('START GETTING RELATED POSTS...');
         $ids=$irp->Manager->getRelatedPostsIds($args);
         $irp->Options->initRelatedPostsIds($ids);
-        $irp->Log->info('POST ID=%s IS SHOWN, RELATED POSTS=%s', $post->ID, $ids);
+        //$irp->Log->debug('STOP GOT RELATED POSTS=[%s]', $ids);
+        //$irp->Log->info('POST ID=%s IS SHOWN, RELATED POSTS=%s', $post->ID, $ids);
     }
     $irp->Log->pauseTime();
 }
@@ -222,6 +224,7 @@ function irp_fix_the_content($content) {
 add_filter('wp_head', 'irp_the_content');
 function irp_the_content() {
     global $irp, $post;
+
     if($irp->Plugin->isActive(IRP_PLUGINS_INTELLY_RELATED_POSTS_PRO)) {
         return;
     }

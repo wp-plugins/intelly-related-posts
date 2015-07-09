@@ -177,7 +177,7 @@ class IRP_AppOptions extends IRP_Options {
     }
     //how many related posts boxes we have to include?
     public function getRewriteBoxesCount() {
-        return $this->getOption('RewriteBoxesCount', 3);
+        return intval($this->getOption('RewriteBoxesCount', 3));
     }
     public function setRewriteBoxesCount($value) {
         $this->setOption('RewriteBoxesCount', $value);
@@ -191,7 +191,7 @@ class IRP_AppOptions extends IRP_Options {
         $this->setOption('RewritePostsInBoxCount', $value);
     }
     public function getRewritePostsDays() {
-        return $this->getOption('RewritePostsDays', 0);
+        return intval($this->getOption('RewritePostsDays', 0));
     }
     public function setRewritePostsDays($value) {
         $this->setOption('RewritePostsDays', intval($value));

@@ -17,7 +17,7 @@ class IRP_Manager {
 
         $defaults=array('postId'=>0
             , 'posts'=>array(), 'cats'=>array(), 'tags'=>array()
-            , 'count'=>-1
+            , 'count'=>10
             , 'shuffle'=>FALSE);
         $args=$irp->Utils->parseArgs($args, $defaults);
 
@@ -70,11 +70,19 @@ class IRP_Manager {
         $post=$irp->Options->getPostShown();
         $options=array(
             'post_type'=>$post->post_type
-            , 'nopaging'=>TRUE
-            , 'posts_per_page'=>$args['count']
+            //, 'nopaging'=>TRUE
+            , 'posts_per_page'=>10
             , 'post_status'=>'publish'
             , 'post__not_in'=>array($post->ID)
+            , 'orderby'=>'rand'
         );
+        $days=$irp->Options->getRewritePostsDays();
+        if($days>0) {
+            $options['date_query'] = array(
+                'column' => 'post_date'
+                , 'after' => '- '.$days.' days'
+            );
+        }
         $options[$optionKey]=$optionArray;
 
         $q=new WP_Query();
